@@ -1,0 +1,9 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+export async function generateEmbedding(text: string): Promise<number[]> {
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+  const model = genAI.getGenerativeModel({ model: "text-embedding-001" });
+  
+  const result = await model.embedContent(text.replace(/\n/g, " "));
+  return result.embedding.values;
+}
