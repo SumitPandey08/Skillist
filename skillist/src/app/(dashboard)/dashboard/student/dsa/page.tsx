@@ -216,7 +216,7 @@ export default function DSAPage() {
                                 key={i}
                                 whileHover={{ x: 4 }}
                                 className="p-6 rounded-[2rem] bg-muted/30 border-2 border-border/10 hover:border-emerald-500/20 transition-all cursor-pointer group"
-                                onClick={() => window.open(topic.url, '_blank')}
+                                onClick={() => window.open(tool.url, '_blank')}
                             >
                                 <div className="flex items-center justify-between mb-2">
                                     <h3 className="font-black text-lg group-hover:text-emerald-600 transition-colors">{tool.name}</h3>

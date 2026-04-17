@@ -41,10 +41,14 @@ export function ProjectsSection({ initialProjects }: { initialProjects: Project[
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Projects</h2>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger render={<Button variant="outline" size="sm" />}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Project
-          </DialogTrigger>
+          <DialogTrigger
+            render={
+              <Button variant="outline" size="sm">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Project
+              </Button>
+            }
+          />
           <DialogContent>
             <form action={handleSubmit}>
               <DialogHeader>

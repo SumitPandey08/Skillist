@@ -38,10 +38,14 @@ export function CertsSection({ initialCerts }: { initialCerts: Certification[] }
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Certifications</h2>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger render={<Button variant="outline" size="sm" />}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Certification
-          </DialogTrigger>
+          <DialogTrigger
+            render={
+              <Button variant="outline" size="sm">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Certification
+              </Button>
+            }
+          />
           <DialogContent>
             <form action={handleSubmit}>
               <DialogHeader>

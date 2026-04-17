@@ -29,12 +29,12 @@ export default async function PortfolioPage() {
 
   const userProjects = await db.query.projects.findMany({
     where: eq(projects.studentId, userId),
-    orderBy: (projects, { desc }) => [desc(projects.startDate)],
+    orderBy: (projects: any, { desc }: any) => [desc(projects.startDate)],
   })
 
   const userCerts = await db.query.certifications.findMany({
     where: eq(certifications.studentId, userId),
-    orderBy: (certifications, { desc }) => [desc(certifications.issueDate)],
+    orderBy: (certifications: any, { desc }: any) => [desc(certifications.issueDate)],
   })
 
   return (

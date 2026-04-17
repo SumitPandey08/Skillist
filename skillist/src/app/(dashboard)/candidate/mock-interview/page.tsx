@@ -28,7 +28,7 @@ export default async function MockInterviewPage({ searchParams }: { searchParams
     where: eq(mockInterviews.id, interviewId),
     with: {
       messages: {
-        orderBy: (messages, { asc }) => [asc(messages.createdAt)]
+        orderBy: (messages: any, { asc }: any) => [asc(messages.createdAt)]
       }
     }
   })

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { db, users, students, skills, studentSkills, projects, certifications, companies, jobs, eq } from '@/db';
+import { db, users, students, skills, studentSkills, projects, certifications, companies, jobs, jobSkills, eq } from '@/db';
 import { nanoid } from 'nanoid';
 
 describe('Drizzle Schema', () => {

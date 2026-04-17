@@ -29,9 +29,16 @@ export async function tailorResume(jobId: string) {
   }))
 
   return {
-    name: student.name,
-    email: student.user.email,
-    bio: tailored.tailoredBio,
+    personalInfo: {
+      name: student.name,
+      email: student.user.email,
+      phone: student.phone || null,
+      location: student.location || null,
+      linkedIn: student.linkedin || null,
+      github: student.github || null,
+      portfolio: student.portfolioUrl || null,
+    },
+    professionalSummary: tailored.tailoredBio,
     experience: tailoredExperience,
     projects: tailoredProjects,
     education: student.education,

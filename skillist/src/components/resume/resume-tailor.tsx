@@ -62,7 +62,7 @@ export function ResumeTailor({ jobId, jobTitle }: { jobId: string; jobTitle: str
             
             <PDFDownloadLink
               document={<ATSTemplate data={tailoredData} />}
-              fileName={`Resume-${tailoredData.name.replace(/\s+/g, '-')}-${jobTitle.replace(/\s+/g, '-')}.pdf`}
+              fileName={`Resume-${tailoredData.personalInfo?.name?.replace(/\s+/g, '-') || 'resume'}-${jobTitle.replace(/\s+/g, '-')}.pdf`}
             >
               {({ loading }) => (
                 <Button className="w-full h-12 gap-2" variant="default" disabled={loading}>

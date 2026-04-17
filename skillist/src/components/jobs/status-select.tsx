@@ -22,7 +22,8 @@ const statuses = [
 export function StatusSelect({ appId, currentStatus }: { appId: string; currentStatus: string }) {
   const [isPending, startTransition] = React.useTransition()
 
-  function handleStatusChange(value: string) {
+  function handleStatusChange(value: string | null) {
+    if (!value) return
     startTransition(async () => {
       try {
         await updateApplicationStatus(appId, value)

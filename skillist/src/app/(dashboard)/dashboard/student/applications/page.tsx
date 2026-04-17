@@ -46,7 +46,7 @@ export default async function ApplicationsPage() {
              </Card>
              <Card className="bg-background/40 backdrop-blur-sm border-border/40 px-6 py-4 rounded-3xl">
                 <div className="text-2xl font-black text-green-500">
-                  {userApplications.filter(a => a.status === 'offered' || a.status === 'hired').length}
+                  {userApplications.filter((a: any) => a.status === 'offered' || a.status === 'hired').length}
                 </div>
                 <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Success</div>
              </Card>

@@ -62,9 +62,16 @@ const styles = StyleSheet.create({
 })
 
 interface ResumeData {
-  name: string
-  email: string
-  bio?: string | null
+  personalInfo: {
+    name: string
+    email: string
+    phone?: string | null
+    location?: string | null
+    linkedIn?: string | null
+    github?: string | null
+    portfolio?: string | null
+  }
+  professionalSummary?: string | null
   skills: { name: string; proficiency: string }[]
   experience: any[]
   education: any[]
@@ -76,15 +83,15 @@ export const ATSTemplate = ({ data }: { data: ResumeData }) => (
     <Page size="A4" style={styles.page}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.name}>{data.name}</Text>
-        <Text style={styles.contact}>{data.email} | ECHFLUX Portfolio Profile</Text>
+        <Text style={styles.name}>{data.personalInfo.name}</Text>
+        <Text style={styles.contact}>{data.personalInfo.email} | Portfolio Profile</Text>
       </View>
 
       {/* Summary */}
-      {data.bio && (
+      {data.professionalSummary && (
         <View>
           <Text style={styles.sectionTitle}>Professional Summary</Text>
-          <Text style={styles.description}>{data.bio}</Text>
+          <Text style={styles.description}>{data.professionalSummary}</Text>
         </View>
       )}
 
@@ -92,7 +99,7 @@ export const ATSTemplate = ({ data }: { data: ResumeData }) => (
       {data.experience.length > 0 && (
         <View>
           <Text style={styles.sectionTitle}>Experience</Text>
-          {data.experience.map((exp, idx) => (
+          {data.experience.map((exp: any, idx: number) => (
             <View key={idx} style={{ marginBottom: 10 }}>
               <View style={styles.itemHeader}>
                 <Text style={styles.bold}>{exp.title}</Text>
@@ -109,7 +116,7 @@ export const ATSTemplate = ({ data }: { data: ResumeData }) => (
       {data.projects.length > 0 && (
         <View>
           <Text style={styles.sectionTitle}>Key Projects</Text>
-          {data.projects.map((proj, idx) => (
+          {data.projects.map((proj: any, idx: number) => (
             <View key={idx} style={{ marginBottom: 8 }}>
               <View style={styles.itemHeader}>
                 <Text style={styles.bold}>{proj.title}</Text>
@@ -125,7 +132,7 @@ export const ATSTemplate = ({ data }: { data: ResumeData }) => (
       <View>
         <Text style={styles.sectionTitle}>Skills & Expertise</Text>
         <View style={styles.skills}>
-          {data.skills.map((skill, idx) => (
+          {data.skills.map((skill: any, idx: number) => (
             <Text key={idx} style={styles.skillTag}>
               {skill.name} ({skill.proficiency})
             </Text>
@@ -137,7 +144,7 @@ export const ATSTemplate = ({ data }: { data: ResumeData }) => (
       {data.education.length > 0 && (
         <View>
           <Text style={styles.sectionTitle}>Education</Text>
-          {data.education.map((edu, idx) => (
+          {data.education.map((edu: any, idx: number) => (
             <View key={idx} style={{ marginBottom: 5 }}>
               <View style={styles.itemHeader}>
                 <Text style={styles.bold}>{edu.school}</Text>

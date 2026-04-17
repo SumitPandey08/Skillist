@@ -7,53 +7,65 @@ export interface ResumeData {
   personalInfo: {
     name: string
     email: string
-    phone?: string
-    location?: string
-    linkedIn?: string
-    github?: string
-    portfolio?: string
+    phone?: string | null
+    location?: string | null
+    linkedIn?: string | null
+    github?: string | null
+    portfolio?: string | null
   }
   professionalSummary: string
   skills: { name: string; proficiency: string }[]
   experience: {
     title: string
     company: string
-    location?: string
+    location?: string | null
     description: string
     startDate: string
-    endDate?: string
+    endDate?: string | null
     isCurrentRole?: boolean
   }[]
   education: {
     school: string
     degree: string
-    field?: string
-    graduationDate?: string
-    gpa?: string
+    field?: string | null
+    graduationDate?: string | null
+    gpa?: string | null
   }[]
   projects: {
     title: string
     description: string
     technologies: string[]
-    url?: string
+    url?: string | null
   }[]
   certifications: {
     name: string
     issuer: string
-    date?: string
+    date?: string | null
   }[]
 }
 
-export async function generateAIResume(studentData: any, targetRole?: string): Promise<ResumeData> {
+export async function generateAIResume(
+  studentData: any, 
+  targetRole?: string,
+  options?: { 
+    modelProvider?: string; 
+    industry?: string;
+    currentResume?: any;
+    regenerateSection?: string;
+  }
+): Promise<any> {
+  const body: any = {
+    student: studentData,
+    targetRole: targetRole || 'Software Engineer',
+    ...options,
+  };
+
   const data = await fetchFromBackend('/agentic/resume/generate', {
     method: 'POST',
-    body: JSON.stringify({
-      student: studentData,
-      targetRole: targetRole || 'Software Engineer'
-    })
-  })
+    body: JSON.stringify(body),
+  });
   
-  return data.resume
+  return data.resume;
 }
 
 export async function getUserResumes(studentId: string) {

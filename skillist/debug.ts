@@ -1,5 +1,5 @@
-import { db } from './src/db/index.ts';
-import { users } from './src/db/schema.ts';
+import { db } from './src/db/index';
+import { users } from './src/db/schema';
 
 async function test() {
   try {

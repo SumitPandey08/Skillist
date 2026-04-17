@@ -76,13 +76,24 @@ router.post('/generate-resume', async (req, res) => {
 
 router.post('/resume/generate', requireStudent, async (req, res) => {
   try {
-    const { student, targetRole } = req.body;
+    const { student, targetRole, modelProvider, industry } = req.body;
     if (!student) return res.status(400).json({ error: 'Missing student data' });
     if (!targetRole) return res.status(400).json({ error: 'Missing targetRole' });
 
-    logger.info(`Generating resume for target role: ${targetRole}`);
-    const resume = await generateResume({ student, targetRole });
-    res.json({ resume });
+    logger.info(`Generating resume for target role: ${targetRole}, model: ${modelProvider || 'default'}`);
+    
+    const resume = await generateResume({ 
+      student, 
+      targetRole, 
+      modelProvider: modelProvider || 'gemini-flash',
+      industry: industry || 'technology'
+    });
+    
+    res.json({ 
+      resume,
+      atsScore: resume.atsScore,
+      suggestions: resume.suggestions,
+    });
   } catch (error: any) {
     logger.error(`Failed to generate resume: ${error.message}`);
     res.status(500).json({ error: 'Failed to generate resume' });

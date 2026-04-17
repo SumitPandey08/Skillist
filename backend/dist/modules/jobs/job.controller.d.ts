@@ -1,0 +1,12 @@
+import { Request, Response, NextFunction } from 'express';
+export declare const getJobs: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+export declare const getCompanyJobs: (req: any, res: Response, next: NextFunction) => Promise<void>;
+export declare const getJobById: (req: Request, res: Response, next: NextFunction) => Promise<Response<any, Record<string, any>> | undefined>;
+export declare const getCompanyJobDetails: (req: any, res: Response, next: NextFunction) => Promise<Response<any, Record<string, any>> | undefined>;
+export declare const createJob: (req: any, res: Response, next: NextFunction) => Promise<void>;
+export declare const updateJob: (req: any, res: Response, next: NextFunction) => Promise<Response<any, Record<string, any>> | undefined>;
+export declare const updateJobStatus: (req: any, res: Response, next: NextFunction) => Promise<Response<any, Record<string, any>> | undefined>;
+export declare const deleteJob: (req: any, res: Response, next: NextFunction) => Promise<Response<any, Record<string, any>> | undefined>;
+export declare const applyToJob: (req: any, res: Response, next: NextFunction) => Promise<Response<any, Record<string, any>> | undefined>;
+export declare const updateApplicationStatus: (req: any, res: Response, next: NextFunction) => Promise<Response<any, Record<string, any>> | undefined>;
+export declare const getApplicationById: (req: any, res: Response, next: NextFunction) => Promise<Response<any, Record<string, any>> | undefined>;
