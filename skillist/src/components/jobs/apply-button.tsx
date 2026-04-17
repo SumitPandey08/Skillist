@@ -66,6 +66,7 @@ export function ApplyButton({ jobId, existingApplication }: ApplyButtonProps) {
             <Button 
               variant="outline" 
               className="w-full text-xs gap-2" 
+              nativeButton={false}
               render={<a href={`/jobs/${jobId}/tailor`} />}
             >
               <Sparkles className="h-3.5 w-3.5" />

@@ -59,15 +59,15 @@ export default async function PortfolioPage() {
         </div>
 
         <div className="space-y-10">
-          <div className="p-10 rounded-[3rem] bg-background/60 backdrop-blur-xl border border-border/40 shadow-2xl shadow-primary/5">
+          <div id="skills" className="p-10 rounded-[3rem] bg-background/60 backdrop-blur-xl border border-border/40 shadow-2xl shadow-primary/5">
             <SkillsSection initialSkills={userSkills} />
           </div>
           
-          <div className="p-10 rounded-[3rem] bg-background/60 backdrop-blur-xl border border-border/40 shadow-2xl shadow-primary/5">
+          <div id="projects" className="p-10 rounded-[3rem] bg-background/60 backdrop-blur-xl border border-border/40 shadow-2xl shadow-primary/5">
             <ProjectsSection initialProjects={userProjects} />
           </div>
           
-          <div className="p-10 rounded-[3rem] bg-background/60 backdrop-blur-xl border border-border/40 shadow-2xl shadow-primary/5">
+          <div id="certifications" className="p-10 rounded-[3rem] bg-background/60 backdrop-blur-xl border border-border/40 shadow-2xl shadow-primary/5">
             <CertsSection initialCerts={userCerts} />
           </div>
         </div>

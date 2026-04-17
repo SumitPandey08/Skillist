@@ -134,7 +134,7 @@ export function EditJobForm({ jobId, initialData }: EditJobFormProps) {
         />
 
         <div className="flex justify-end gap-4 pt-4 border-t">
-          <Button variant="outline" type="button" render={<Link href="/dashboard/company/jobs" />}>
+          <Button variant="outline" type="button" nativeButton={false} render={<Link href="/dashboard/company/jobs" />}>
             Cancel
           </Button>
           <Button type="submit" disabled={isPending}>

@@ -15,6 +15,7 @@ export function JobActions({ jobId, status }: { jobId: string; status: string })
         variant="outline" 
         size="sm" 
         className="w-full justify-start border-primary/20 hover:bg-primary/5" 
+        nativeButton={false}
         render={<Link href={`/employer/candidates?jobId=${jobId}`} />}
       >
         <Users className="h-4 w-4 mr-2" /> View Applicants
@@ -23,6 +24,7 @@ export function JobActions({ jobId, status }: { jobId: string; status: string })
         variant="ghost" 
         size="sm" 
         className="w-full justify-start" 
+        nativeButton={false}
         render={<Link href={`/employer/jobs/${jobId}/edit`} />}
       >
         <Edit className="h-4 w-4 mr-2" /> Edit

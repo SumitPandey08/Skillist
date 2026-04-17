@@ -42,6 +42,7 @@ export function SharePortfolio({ slug }: { slug: string }) {
           <Button 
             size="icon" 
             variant="outline" 
+            nativeButton={false}
             render={
               <a href={`/portfolio/${slug}`} target="_blank" rel="noopener noreferrer" title="View Public Portfolio" />
             }

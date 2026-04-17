@@ -4,10 +4,14 @@ import logger from '../core/logger';
 
 export const redisConnection = new Redis(env.REDIS_URL, {
   maxRetriesPerRequest: null,
-  retryStrategy: () => null, // Don't retry, fail immediately
-  enableReadyCheck: false,
-  enableOfflineQueue: false,
-  lazyConnect: true, // Don't connect until explicitly called
+  retryStrategy: (times) => {
+    // Exponential backoff with a cap of 2 seconds
+    const delay = Math.min(times * 50, 2000);
+    return delay;
+  },
+  enableReadyCheck: true,
+  enableOfflineQueue: true,
+  lazyConnect: false,
 });
 
 let redisErrorLogged = false;

@@ -3,13 +3,18 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { LayoutDashboard, Briefcase, GraduationCap, User, Settings, Search, BookOpen, MessageSquare, Bot, Sparkles, Target, FileText } from 'lucide-react'
+import { LayoutDashboard, Briefcase, GraduationCap, User, Settings, Search, BookOpen, MessageSquare, Bot, Sparkles, Target, FileText, Code2, Layers } from 'lucide-react'
 
 const navItems = [
   { name: 'Overview', href: '/dashboard/student', icon: LayoutDashboard },
   { name: 'Applications', href: '/dashboard/student/applications', icon: Briefcase },
   { name: 'Portfolio', href: '/dashboard/student/portfolio', icon: GraduationCap },
   { name: 'Find Jobs', href: '/jobs', icon: Search },
+]
+
+const prepItems = [
+  { name: 'Study DSA', href: '/dashboard/student/dsa', icon: Code2 },
+  { name: 'System Design', href: '/dashboard/student/system-design', icon: Layers },
 ]
 
 const aiItems = [
@@ -70,6 +75,39 @@ export function DashboardNav() {
                     : "bg-muted group-hover:bg-primary/10"
                 )}>
                   <Icon className="w-4 h-4" />
+                </div>
+                {item.name}
+              </Link>
+            )
+          })}
+        </div>
+      </div>
+
+      <div className="px-3 mb-4">
+        <p className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest px-3 mb-2">Prep Zone</p>
+        <div className="space-y-1">
+          {prepItems.map((item) => {
+            const isActive = pathname === item.href
+            const Icon = item.icon
+            
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "group flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 relative overflow-hidden",
+                  isActive 
+                    ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20" 
+                    : "text-muted-foreground hover:bg-emerald-500/5 hover:text-emerald-600 hover:shadow-sm"
+                )}
+              >
+                <div className={cn(
+                  "p-1.5 rounded-lg transition-all duration-200",
+                  isActive 
+                    ? "bg-white/20" 
+                    : "bg-emerald-500/10 group-hover:bg-emerald-500/20"
+                )}>
+                  <Icon className="w-4 h-4 text-emerald-500 group-hover:text-emerald-600 transition-colors" />
                 </div>
                 {item.name}
               </Link>

@@ -7,9 +7,10 @@ import { requireStudent } from '../../core/middlewares/auth';
 const router = Router();
 const agentQueue = createQueue('agent-queue');
 
-router.post('/refine-roadmap', async (req, res) => {
+router.post('/refine-roadmap', requireStudent, async (req: any, res) => {
   try {
-    const { roadmapId, studentId, targetRole, currentSkills, initialRoadmap } = req.body;
+    const { roadmapId, targetRole, currentSkills, initialRoadmap } = req.body;
+    const studentId = req.auth.userId;
     if (!roadmapId) return res.status(400).json({ error: 'Missing roadmapId' });
 
     await agentQueue.add('refine-roadmap', {
@@ -19,13 +20,14 @@ router.post('/refine-roadmap', async (req, res) => {
     res.json({ success: true, message: 'Refinement job queued' });
   } catch (error: any) {
     logger.error(`Failed to queue refinement job: ${error.message}`);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: error.message || 'Internal server error' });
   }
 });
 
-router.post('/analyze-interview', async (req, res) => {
+router.post('/analyze-interview', requireStudent, async (req: any, res) => {
   try {
-    const { interviewId, studentId, role, transcript } = req.body;
+    const { interviewId, role, transcript } = req.body;
+    const studentId = req.auth.userId;
     if (!interviewId) return res.status(400).json({ error: 'Missing interviewId' });
 
     await agentQueue.add('analyze-interview', {
@@ -35,13 +37,14 @@ router.post('/analyze-interview', async (req, res) => {
     res.json({ success: true, message: 'Interview analysis job queued' });
   } catch (error: any) {
     logger.error(`Failed to queue interview analysis: ${error.message}`);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: error.message || 'Internal server error' });
   }
 });
 
-router.post('/analyze-skills', async (req, res) => {
+router.post('/analyze-skills', requireStudent, async (req: any, res) => {
   try {
-    const { studentId, targetRole, currentSkills } = req.body;
+    const { targetRole, currentSkills } = req.body;
+    const studentId = req.auth.userId;
     if (!studentId) return res.status(400).json({ error: 'Missing studentId' });
 
     await agentQueue.add('analyze-skills', {
@@ -51,7 +54,7 @@ router.post('/analyze-skills', async (req, res) => {
     res.json({ success: true, message: 'Skill analysis job queued' });
   } catch (error: any) {
     logger.error(`Failed to queue skill analysis: ${error.message}`);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: error.message || 'Internal server error' });
   }
 });
 
@@ -67,7 +70,7 @@ router.post('/generate-resume', async (req, res) => {
     res.json({ success: true, message: 'Resume generation job queued' });
   } catch (error: any) {
     logger.error(`Failed to queue resume generation: ${error.message}`);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: error.message || 'Internal server error' });
   }
 });
 
