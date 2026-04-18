@@ -445,134 +445,174 @@ export function ResumeMaker({ studentData, initialResumes = [] }: ResumeMakerPro
                 exit={{ opacity: 0, y: -20 }}
                 className="space-y-6"
               >
-                <Card className="p-8 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-purple-500/5 to-transparent" />
-                  <div className="relative space-y-6">
-                    <div className="flex items-center gap-4">
-                      <div className="p-4 rounded-2xl bg-gradient-to-br from-primary to-purple-600 shadow-lg">
-                        <Sparkles className="w-8 h-8 text-white" />
+                <div className="grid gap-6 md:grid-cols-12">
+                  {/* Left: Configuration */}
+                  <div className="md:col-span-5 space-y-6">
+                    <Card className="p-6 relative overflow-hidden border-2">
+                      <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+                        <Sparkles className="w-24 h-24" />
                       </div>
-                      <div>
-                        <h3 className="text-xl font-bold">Generate New AI Resume</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Create a tailored, ATS-optimized resume in seconds
-                        </p>
-                      </div>
-                    </div>
-
-                      <div className="space-y-5">
-                        <div className="space-y-2">
-                          <Label htmlFor="target-role" className="text-sm font-medium">
-                            Target Job Role
-                          </Label>
-                          <Input
-                            id="target-role"
-                            value={targetRole}
-                            onChange={(e) => setTargetRole(e.target.value)}
-                            placeholder="e.g., Senior Frontend Engineer, Product Manager, Data Scientist"
-                            className="h-12 text-base"
-                          />
-                          <p className="text-xs text-muted-foreground">
-                            AI will tailor your resume specifically for this role
+                      
+                      <div className="relative space-y-6">
+                        <div>
+                          <h3 className="text-xl font-bold flex items-center gap-2">
+                            <Wand className="w-5 h-5 text-primary" />
+                            Create AI Resume
+                          </h3>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            AI will tailor your resume for a specific role
                           </p>
                         </div>
 
-                        <div className="space-y-3">
-                          <Label className="text-sm font-medium">Choose Template</Label>
-                          <TemplateSelector
-                            data={resumeData || {
-                              personalInfo: { name: '', email: '' },
-                              professionalSummary: '',
-                              skills: [],
-                              experience: [],
-                              education: [],
-                              projects: [],
-                              certifications: [],
-                            }}
-                            selectedTemplate={selectedTemplate as TemplateType}
-                            onTemplateChange={(t: TemplateType) => setSelectedTemplate(t)}
-                          />
-                         </div>
-
-                       <Button
-                        onClick={handleGenerate}
-                        disabled={isGenerating || !targetRole.trim()}
-                        className="w-full h-14 text-lg gap-3 shadow-lg hover:shadow-xl transition-all"
-                        size="lg"
-                      >
-                        {isGenerating ? (
-                          <>
-                            <Loader2 className="w-5 h-5 animate-spin" />
-                            Generating Your Resume... {Math.round(generationProgress)}%
-                          </>
-                        ) : (
-                          <>
-                            <Sparkles className="w-5 h-5" />
-                            Generate Professional Resume
-                          </>
-                        )}
-                      </Button>
-
-                      {isGenerating && (
-                        <Progress value={generationProgress} className="h-3" />
-                      )}
-                    </div>
-                  </div>
-                </Card>
-
-                {resumes.length > 0 && (
-                  <Card className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-semibold text-lg">Your Resumes</h3>
-                      <Badge variant="secondary" className="gap-1">
-                        <FileText className="w-3 h-3" />
-                        {resumes.length} saved
-                      </Badge>
-                    </div>
-                    <div className="space-y-3">
-                      {resumes.map((resume) => (
-                        <div
-                          key={resume.id}
-                          className="flex items-center justify-between p-5 rounded-xl bg-muted/50 hover:bg-muted transition-all group"
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className="p-3 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                              <FileText className="w-6 h-6 text-primary" />
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="target-role" className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                              Target Job Role
+                            </Label>
+                            <div className="relative">
+                              <Target className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                              <Input
+                                id="target-role"
+                                value={targetRole}
+                                onChange={(e) => setTargetRole(e.target.value)}
+                                placeholder="e.g. Senior Frontend Engineer"
+                                className="h-11 pl-10 bg-muted/30 focus:bg-background transition-colors"
+                              />
                             </div>
-                            <div>
-                              <p className="font-semibold">{resume.title}</p>
-                              <div className="flex items-center gap-3 mt-1">
-                                <span className="text-xs text-muted-foreground">
-                                  {new Date(resume.createdAt).toLocaleDateString()}
-                                </span>
-                                {resume.atsScore && (
-                                  <Badge variant="outline" className="text-xs gap-1">
-                                    <TrendingUp className="w-3 h-3" />
-                                    ATS: {resume.atsScore}
-                                  </Badge>
-                                )}
+                          </div>
+
+                          <div className="space-y-3">
+                            <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                              Select Template Style
+                            </Label>
+                            <TemplateSelector
+                              data={resumeData || {
+                                personalInfo: { name: '', email: '' },
+                                professionalSummary: '',
+                                skills: [],
+                                experience: [],
+                                education: [],
+                                projects: [],
+                                certifications: [],
+                              }}
+                              selectedTemplate={selectedTemplate as TemplateType}
+                              onTemplateChange={(t: TemplateType) => setSelectedTemplate(t)}
+                            />
+                          </div>
+
+                          <Button
+                            onClick={handleGenerate}
+                            disabled={isGenerating || !targetRole.trim()}
+                            className="w-full h-12 text-base gap-3 shadow-lg shadow-primary/20 hover:shadow-xl transition-all font-bold"
+                          >
+                            {isGenerating ? (
+                              <>
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                                Analyzing Profile... {Math.round(generationProgress)}%
+                              </>
+                            ) : (
+                              <>
+                                <Zap className="w-5 h-5" />
+                                Magic Enhance & Generate
+                              </>
+                            )}
+                          </Button>
+
+                          {isGenerating && (
+                            <Progress value={generationProgress} className="h-2" />
+                          )}
+                        </div>
+                      </div>
+                    </Card>
+
+                    {/* Quick Tips */}
+                    <Card className="p-5 bg-primary/5 border-primary/10">
+                      <h4 className="font-bold text-sm flex items-center gap-2 mb-3">
+                        <Lightbulb className="w-4 h-4 text-primary" />
+                        Optimization Tips
+                      </h4>
+                      <ul className="space-y-2 text-xs text-muted-foreground">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-3 h-3 text-primary mt-0.5" />
+                          Use specific role names for better AI tailoring
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-3 h-3 text-primary mt-0.5" />
+                          Ensure your profile projects have descriptions
+                        </li>
+                      </ul>
+                    </Card>
+                  </div>
+
+                  {/* Right: Existing Resumes */}
+                  <div className="md:col-span-7">
+                    <Card className="h-full border-2 border-dashed bg-muted/10 p-6">
+                      <div className="flex items-center justify-between mb-6">
+                        <h3 className="font-bold text-lg">Your Resume Collection</h3>
+                        <Badge variant="outline" className="font-mono">
+                          {resumes.length} TOTAL
+                        </Badge>
+                      </div>
+                      
+                      {resumes.length > 0 ? (
+                        <div className="grid gap-4 sm:grid-cols-1">
+                          {resumes.map((resume) => (
+                            <div
+                              key={resume.id}
+                              className="group relative flex items-center justify-between p-4 rounded-2xl bg-background border hover:border-primary/50 hover:shadow-md transition-all"
+                            >
+                              <div className="flex items-center gap-4">
+                                <div className={cn(
+                                  "p-3 rounded-xl transition-colors",
+                                  resume.template === 'modern-tech' ? 'bg-indigo-100 text-indigo-600' :
+                                  resume.template === 'executive' ? 'bg-amber-100 text-amber-600' :
+                                  resume.template === 'creative' ? 'bg-pink-100 text-pink-600' :
+                                  'bg-slate-100 text-slate-600'
+                                )}>
+                                  <FileType className="w-6 h-6" />
+                                </div>
+                                <div>
+                                  <p className="font-bold text-sm">{resume.title}</p>
+                                  <div className="flex items-center gap-3 mt-1">
+                                    <span className="text-[10px] text-muted-foreground uppercase font-black">
+                                      {new Date(resume.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                    </span>
+                                    {resume.atsScore && (
+                                      <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-green-50 text-[10px] font-bold text-green-600 border border-green-100">
+                                        <BarChart2 className="w-2.5 h-2.5" />
+                                        {resume.atsScore}% FIT
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-1 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+                                  <Eye className="w-4 h-4" />
+                                </Button>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+                                  <Download className="w-4 h-4" />
+                                </Button>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-destructive hover:text-destructive">
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
                               </div>
                             </div>
-                          </div>
-                          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Button variant="ghost" size="sm" title="View">
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm" title="Download PDF">
-                              <Download className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm" title="Edit">
-                              <Edit3 className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm" title="Delete" className="text-destructive hover:text-destructive">
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
-                  </Card>
-                )}
+                      ) : (
+                        <div className="flex flex-col items-center justify-center h-64 text-center">
+                          <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                            <FileText className="w-8 h-8 text-muted-foreground" />
+                          </div>
+                          <p className="text-sm font-medium text-muted-foreground">
+                            No resumes yet. Start by entering a target role!
+                          </p>
+                        </div>
+                      )}
+                    </Card>
+                  </div>
+                </div>
               </motion.div>
             ) : viewMode === 'editor' ? (
               <motion.div

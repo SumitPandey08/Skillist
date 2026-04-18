@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { LayoutDashboard, Briefcase, GraduationCap, User, Settings, Search, BookOpen, MessageSquare, Bot, Sparkles, Target, FileText, Code2, Layers } from 'lucide-react'
+import { LayoutDashboard, Briefcase, GraduationCap, User, Settings, Search, BookOpen, MessageSquare, Bot, Sparkles, Target, FileText, Code2, Layers, Zap, CheckCircle2 } from 'lucide-react'
 
 const navItems = [
   { name: 'Overview', href: '/dashboard/student', icon: LayoutDashboard },
@@ -22,6 +22,8 @@ const aiItems = [
   { name: 'AI Interviewer', href: '/dashboard/student/interviews', icon: Bot },
   { name: 'Career Roadmap', href: '/dashboard/student/roadmap', icon: Target },
   { name: 'Skill Analysis', href: '/dashboard/student/analysis', icon: Sparkles },
+  { name: 'Skill Assessment', href: '/dashboard/student/assessment', icon: CheckCircle2 },
+  { name: 'Career Engine', href: '/dashboard/student/career', icon: Zap },
 ]
 
 const secondaryItems = [

@@ -80,8 +80,41 @@ model Student {
   externalAccounts  ExternalAccount[]
   normalizedSkills  NormalizedSkill[]
   scores            UserScore?
+  assessmentResults AssessmentResult[]
+  careerRecommendations CareerRecommendation[]
 
   @@map("students")
+}
+
+model AssessmentResult {
+  id                String   @id // nanoid
+  studentId         String   @map("student_id")
+  skillName         String   @map("skill_name")
+  score             Int      @default(0) // 0-100
+  totalQuestions    Int      @default(0) @map("total_questions")
+  correctAnswers    Int      @default(0) @map("correct_answers")
+  identifiedGaps    String?  @map("identified_gaps") // JSON array of missing sub-skills
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  student           Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  careerRecommendations CareerRecommendation[]
+
+  @@map("assessment_results")
+}
+
+model CareerRecommendation {
+  id                String   @id // nanoid
+  studentId         String   @map("student_id")
+  assessmentResultId String? @map("assessment_result_id")
+  suggestedRoles    String   @map("suggested_roles") // JSON array of strings
+  gapAnalysis       String   @map("gap_analysis") // JSON array of {skill, gap, recommendation}
+  actionPlan        String   @map("action_plan") // JSON array of {step, priority, resource}
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  student           Student           @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  assessmentResult  AssessmentResult? @relation(fields: [assessmentResultId], references: [id], onDelete: SetNull)
+
+  @@map("career_recommendations")
 }
 
 model ExternalAccount {

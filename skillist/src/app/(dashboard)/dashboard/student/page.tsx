@@ -17,6 +17,7 @@ import { fetchLeetCodeStats } from '@/lib/integrations/leetcode'
 import { fetchCodeforcesStats } from '@/lib/integrations/codeforces'
 import { PlatformStats } from '@/components/portfolio/platform-stats'
 import { Badge } from '@/components/ui/badge'
+import { TrackingWidget } from '@/components/dashboard/student/tracking-widget'
 
 export default async function DashboardPage() {
   const { userId } = await auth()
@@ -110,6 +111,8 @@ export default async function DashboardPage() {
             <div className="p-5 rounded-2xl bg-gradient-to-br from-card to-card/50 border border-border/30 shadow-sm">
               <ProfileCompleteness score={score} missing={missing} />
             </div>
+
+            <TrackingWidget userId={userId} />
 
             <div className="p-5 rounded-2xl bg-muted/20 border border-border/30">
               <ResumeUpload />
