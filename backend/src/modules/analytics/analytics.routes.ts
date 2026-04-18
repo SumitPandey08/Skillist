@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { getActivity, getStats } from './analytics.controller';
-import { authenticate } from '../../core/middlewares/auth';
+import { requireStudent } from '../../core/middlewares/auth';
 
 const router = Router();
 
-router.get('/activity', authenticate, getActivity);
-router.get('/stats', authenticate, getStats);
+router.get('/activity', requireStudent, getActivity);
+router.get('/stats', requireStudent, getStats);
 
 export default router;

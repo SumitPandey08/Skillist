@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { getCareerQuestions, recommendCareer, getLatestRecommendation } from './career.controller';
-import { authenticate } from '../../core/middlewares/auth';
+import { requireStudent } from '../../core/middlewares/auth';
 
 const router = Router();
 
-router.get('/questions/:studentId', authenticate, getCareerQuestions);
-router.post('/recommend', authenticate, recommendCareer);
-router.get('/latest/:studentId', authenticate, getLatestRecommendation);
+router.get('/questions/:studentId', requireStudent, getCareerQuestions);
+router.post('/recommend', requireStudent, recommendCareer);
+router.get('/latest/:studentId', requireStudent, getLatestRecommendation);
 
 export default router;

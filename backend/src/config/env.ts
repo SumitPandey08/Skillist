@@ -11,6 +11,7 @@ const envSchema = z.object({
   CLERK_PUBLISHABLE_KEY: z.string(),
   GEMINI_API_KEY: z.string(),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  ALLOWED_ORIGINS: z.string().default('http://localhost:3000'),
 });
 
 const parsed = envSchema.safeParse(process.env);
