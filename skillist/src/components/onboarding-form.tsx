@@ -23,9 +23,8 @@ export function OnboardingForm() {
       try {
         const res = await completeOnboarding(formData)
         if (res?.success) {
-          // Force Clerk to fetch a new JWT session token so middleware sees onboardingComplete: true
-          await session?.reload()
-          router.push('/dashboard')
+          // Redirect to dashboard which will force a fresh session load
+          window.location.href = '/dashboard'
         }
       } catch (error) {
         console.error('Error during onboarding:', error)

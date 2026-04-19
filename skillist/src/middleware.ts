@@ -1,4 +1,4 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { clerkMiddleware, createRouteMatcher, clerkClient } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
 const isPublicRoute = createRouteMatcher(['/', '/sign-in(.*)', '/sign-up(.*)', '/api/webhooks(.*)', '/jobs(.*)', '/portfolio(.*)'])
@@ -8,7 +8,24 @@ const isCompanyDashboard = createRouteMatcher(['/dashboard/company(.*)'])
 
 export default clerkMiddleware(async (auth, req) => {
   const { userId, sessionClaims } = await auth()
-  const metadata = (sessionClaims as any)?.metadata || (sessionClaims as any)?.publicMetadata;
+  let metadata = (sessionClaims as any)?.metadata || (sessionClaims as any)?.publicMetadata;
+
+  console.log('[MIDDLEWARE DEBUG] User:', userId);
+  
+  // If metadata is missing and we have a user, try to fetch fresh metadata from Clerk
+  if (userId && !metadata?.onboardingComplete) {
+    try {
+      const client = await clerkClient();
+      const user = await client.users.getUser(userId);
+      metadata = user.publicMetadata;
+      console.log('[MIDDLEWARE DEBUG] Fetched fresh metadata from Clerk:', JSON.stringify(metadata));
+    } catch (error) {
+      console.error('[MIDDLEWARE DEBUG] Error fetching fresh metadata:', error);
+    }
+  }
+
+  console.log('[MIDDLEWARE DEBUG] SessionClaims:', JSON.stringify(sessionClaims));
+  console.log('[MIDDLEWARE DEBUG] Metadata:', JSON.stringify(metadata));
 
   // 1. If public route, skip
   if (isPublicRoute(req)) return
@@ -20,7 +37,9 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   // 3. If signed in but no role (onboarding incomplete), redirect to onboarding
-  const onboardingComplete = metadata?.onboardingComplete || (sessionClaims as any)?.publicMetadata?.onboardingComplete
+  const onboardingComplete = metadata?.onboardingComplete
+  console.log('[MIDDLEWARE DEBUG] onboardingComplete value:', onboardingComplete);
+  
   if (!onboardingComplete && !isOnboardingRoute(req)) {
     console.log('[MIDDLEWARE DEBUG] Redirection to Onboarding! OnboardingComplete is falsy.');
     const onboardingUrl = new URL('/onboarding', req.url)

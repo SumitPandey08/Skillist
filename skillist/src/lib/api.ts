@@ -1,8 +1,12 @@
 import { auth } from '@clerk/nextjs/server'
+import { headers as nextHeaders } from 'next/headers'
 
 export async function fetchFromBackend(path: string, options: RequestInit = {}) {
   const { getToken } = await auth()
   const token = await getToken()
+  const hasCookieHeader = typeof window === 'undefined'
+    ? Boolean((await nextHeaders()).get('cookie'))
+    : false
 
   const isServer = typeof window === 'undefined'
   let backendUrl = ''
@@ -19,11 +23,20 @@ export async function fetchFromBackend(path: string, options: RequestInit = {}) 
   const headers = new Headers(options.headers)
   if (token) {
     headers.set('Authorization', `Bearer ${token}`)
+  } else if (hasCookieHeader) {
+    const cookieHeader = (await nextHeaders()).get('cookie')
+    if (cookieHeader) {
+      headers.set('cookie', cookieHeader)
+    }
   }
   
   // Only set JSON content-type if not already set (e.g. for FormData)
   if (!headers.has('Content-Type') && !(options.body instanceof FormData)) {
     headers.set('Content-Type', 'application/json')
+  }
+
+  if (!options.credentials && !isServer) {
+    options = { ...options, credentials: 'include' }
   }
 
   // Remove leading slash from path if backendUrl ends with one or vice versa

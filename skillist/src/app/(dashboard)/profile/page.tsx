@@ -10,14 +10,15 @@ export default async function ProfilePage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
 
-  let user;
+  let data;
   try {
-    user = await fetchFromBackend('/auth/me')
+    data = await fetchFromBackend('/auth/me')
   } catch (error) {
     console.error('Failed to fetch user:', error)
     redirect('/onboarding')
   }
 
+  const user = data?.user;
   if (!user?.role) redirect('/onboarding')
 
   let profileData: any = null

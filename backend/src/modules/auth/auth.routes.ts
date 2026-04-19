@@ -6,7 +6,10 @@ import { requireAuth } from '../../core/middlewares/auth';
 const router = Router();
 
 router.get('/me', requireAuth, authController.getCurrentUser);
-router.post('/onboarding', requireAuth, authController.onboarding);
+router.post('/onboarding', (req, res, next) => {
+  console.log('Incoming /onboarding request headers:', req.headers);
+  next();
+}, requireAuth, authController.onboarding);
 router.post('/webhooks/clerk', webhooksController.clerkWebhook);
 
 export default router;

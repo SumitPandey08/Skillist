@@ -41,7 +41,13 @@ export const submitAssessment = async (req: Request, res: Response, next: NextFu
 };
 
 export const getLatestAssessments = async (req: Request, res: Response, next: NextFunction) => {
-    const { studentId } = req.params;
+    const rawStudentId = req.params.studentId;
+    const studentId = Array.isArray(rawStudentId) ? rawStudentId[0] : rawStudentId;
+
+    if (!studentId) {
+        return res.status(400).json({ error: 'studentId is required' });
+    }
+
     try {
         const results = await prisma.assessmentResult.findMany({
             where: { studentId },

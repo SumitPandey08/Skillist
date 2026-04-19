@@ -4,7 +4,13 @@ import { prisma } from '../../lib/prisma';
 import { nanoid } from 'nanoid';
 
 export const getCareerQuestions = async (req: Request, res: Response, next: NextFunction) => {
-  const { studentId } = req.params;
+  const rawStudentId = req.params.studentId;
+  const studentId = Array.isArray(rawStudentId) ? rawStudentId[0] : rawStudentId;
+
+  if (!studentId) {
+    return res.status(400).json({ error: 'studentId is required' });
+  }
+
   try {
     const student = await prisma.student.findUnique({
         where: { id: studentId },
@@ -52,7 +58,13 @@ export const recommendCareer = async (req: Request, res: Response, next: NextFun
 };
 
 export const getLatestRecommendation = async (req: Request, res: Response, next: NextFunction) => {
-    const { studentId } = req.params;
+    const rawStudentId = req.params.studentId;
+    const studentId = Array.isArray(rawStudentId) ? rawStudentId[0] : rawStudentId;
+
+    if (!studentId) {
+        return res.status(400).json({ error: 'studentId is required' });
+    }
+
     try {
         const recommendation = await prisma.careerRecommendation.findFirst({
             where: { studentId },
