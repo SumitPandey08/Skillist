@@ -13,7 +13,7 @@ export async function fetchFromBackend(path: string, options: RequestInit = {}) 
 
   if (isServer) {
     // On server, we must use the internal backend URL
-    backendUrl = process.env.BACKEND_URL ? `${process.env.BACKEND_URL}/api/v1` : 'http://localhost:3001/api/v1'
+    backendUrl = process.env.BACKEND_URL ? `${process.env.BACKEND_URL}/api/v1` : 'http://127.0.0.1:3001/api/v1'
   } else {
     // On client, if both are same-origin, use the rewrite path
     // If NEXT_PUBLIC_BACKEND_URL is set, it might be an external API

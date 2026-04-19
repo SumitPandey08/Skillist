@@ -159,3 +159,50 @@ export const completeInterview = async (req: any, res: Response, next: NextFunct
     next(error);
   }
 };
+
+export const scheduleInterview = async (req: any, res: Response, next: NextFunction) => {
+  const companyId = req.auth.userId;
+  const { studentId, jobId, role, scheduledAt } = req.body;
+
+  try {
+    const interview = await prisma.mockInterview.create({
+      data: {
+        id: nanoid(),
+        studentId,
+        companyId,
+        jobId,
+        role,
+        scheduledAt: new Date(scheduledAt),
+        status: 'scheduled',
+        updatedAt: new Date()
+      }
+    });
+
+    res.json({ success: true, interview });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCompanyInterviews = async (req: any, res: Response, next: NextFunction) => {
+  const companyId = req.auth.userId;
+  const { jobId } = req.query;
+
+  try {
+    const interviews = await prisma.mockInterview.findMany({
+      where: { 
+        companyId,
+        jobId: jobId ? (jobId as string) : undefined
+      },
+      include: {
+        student: true,
+        job: true
+      },
+      orderBy: { scheduledAt: 'asc' }
+    });
+
+    res.json(interviews);
+  } catch (error) {
+    next(error);
+  }
+};

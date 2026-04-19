@@ -2,10 +2,39 @@ import { Router } from 'express';
 import { createQueue } from '../../core/queues';
 import logger from '../../core/logger';
 import { generateResume } from '../../lib/ai/resume';
-import { requireStudent } from '../../core/middlewares/auth';
+import { requireStudent, requireCompany } from '../../core/middlewares/auth';
+import { jobAgent } from './job-agent';
+import { prisma } from '../../lib/prisma';
 
 const router = Router();
 const agentQueue = createQueue('agent-queue');
+
+router.post('/generate-job-description', requireCompany, async (req: any, res) => {
+  try {
+    const { title, skills, location } = req.body;
+    const userId = req.auth.userId;
+
+    if (!title) return res.status(400).json({ error: 'Missing title' });
+
+    // Try to get company info for better generation
+    const company = await prisma.company.findUnique({
+      where: { id: userId }
+    });
+
+    const description = await jobAgent.generateJobDescription({
+      title,
+      skills: Array.isArray(skills) ? skills : [],
+      companyName: company?.companyName,
+      industry: company?.industry || undefined,
+      location
+    });
+
+    res.json({ description });
+  } catch (error: any) {
+    logger.error(`Failed to generate job description: ${error.message}`);
+    res.status(500).json({ error: error.message || 'Internal server error' });
+  }
+});
 
 router.post('/refine-roadmap', requireStudent, async (req: any, res) => {
   try {

@@ -34,15 +34,33 @@ export const onboarding = async (req: any, res: Response, next: NextFunction) =>
 
   console.log(`Onboarding user ${userId} with role ${role}`);
   try {
-    await prisma.user.upsert({
+    // 1. Fetch user from Clerk to get the real email
+    const clerkUser = await clerkClient.users.getUser(userId);
+    const email = clerkUser.emailAddresses[0]?.emailAddress || '';
+
+    console.log(`[ONBOARDING] Fetched email from Clerk: ${email}`);
+
+    // 2. Upsert the User record
+    console.log(`[ONBOARDING] Upserting user record in DB for ${userId} with role ${role}`);
+    
+    // Direct update first to ensure role is set if user exists
+    await prisma.user.update({
       where: { id: userId },
-      update: { role },
+      data: { role, email }
+    }).catch(() => {
+      console.log(`[ONBOARDING] User ${userId} not found for direct update, will be created by upsert.`);
+    });
+
+    const updatedUser = await prisma.user.upsert({
+      where: { id: userId },
+      update: { role, email },
       create: { 
         id: userId, 
-        email: '', 
+        email, 
         role 
       },
     });
+    console.log(`[ONBOARDING] User record upserted successfully. ID: ${updatedUser.id}, Role in DB: ${updatedUser.role}`);
 
     if (role === 'student') {
       const slug = slugify(`${name}-${nanoid(4)}`, { lower: true });
@@ -61,13 +79,13 @@ export const onboarding = async (req: any, res: Response, next: NextFunction) =>
 
     // Update Clerk metadata
     console.log(`[ONBOARDING] Updating Clerk metadata for ${userId} with onboardingComplete: true`);
-    const clerkUser = await clerkClient.users.updateUserMetadata(userId, {
+    const updatedClerkUser = await clerkClient.users.updateUserMetadata(userId, {
       publicMetadata: {
         onboardingComplete: true,
         role,
       },
     });
-    console.log(`[ONBOARDING] Clerk metadata updated successfully. New metadata:`, JSON.stringify(clerkUser.publicMetadata));
+    console.log(`[ONBOARDING] Clerk metadata updated successfully. New metadata:`, JSON.stringify(updatedClerkUser.publicMetadata));
 
     res.json({ success: true });
   } catch (error) {

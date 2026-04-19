@@ -6,31 +6,37 @@ export const redisConnection = new Redis(env.REDIS_URL, {
   maxRetriesPerRequest: null,
   retryStrategy: (times) => {
     // Exponential backoff with a cap of 2 seconds
-    const delay = Math.min(times * 50, 2000);
+    const delay = Math.min(times * 100, 5000);
     return delay;
   },
   enableReadyCheck: true,
-  enableOfflineQueue: true,
-  lazyConnect: false,
+  enableOfflineQueue: false, // Disable offline queue to prevent memory build-up when Redis is down
+  lazyConnect: true, // Don't connect immediately
 });
 
+export let isRedisConnected = false;
 let redisErrorLogged = false;
 
-// Handle connection errors gracefully (suppress stack trace)
+// Handle connection errors gracefully
 redisConnection.on('error', (err) => {
+  isRedisConnected = false;
   if (!redisErrorLogged) {
     logger.warn(`Redis connection unavailable: ${err.message}. Queue operations will be unavailable.`);
     redisErrorLogged = true;
   }
-  // We MUST keep at least one listener for 'error' to prevent the process from crashing
 });
 
 redisConnection.on('connect', () => {
+  isRedisConnected = true;
   logger.info('Redis connected successfully');
   redisErrorLogged = false;
 });
 
-// Try to connect without blocking - silently fail if Redis is down
+redisConnection.on('close', () => {
+  isRedisConnected = false;
+});
+
+// Try to connect initially
 redisConnection.connect().catch(() => {
-  // Silent catch - connection error already logged above
+  isRedisConnected = false;
 });

@@ -58,13 +58,54 @@ export const getCompanyJobDetails = async (req: any, res: Response, next: NextFu
     const job = await prisma.job.findUnique({
       where: { id },
       include: {
-        skills: { include: { skill: true } }
+        skills: { include: { skill: true } },
+        applications: {
+          include: {
+            student: {
+              include: {
+                skills: { include: { skill: true } }
+              }
+            }
+          },
+          orderBy: { matchScore: 'desc' }
+        }
       }
     });
+
     if (!job || job.companyId !== userId) {
       return res.status(403).json({ error: 'Forbidden or not found' });
     }
-    res.json(job);
+
+    // AI Sourcing: Find top students who haven't applied yet
+    // Using simple skill overlap for now, or vector if we have the job vector
+    const appliedStudentIds = job.applications.map(a => a.studentId);
+    
+    // Attempt vector similarity search for sourcing
+    let sourcedCandidates: any[] = [];
+    try {
+      // Find students not yet applied
+      sourcedCandidates = await prisma.$queryRawUnsafe(`
+        SELECT 
+          s.id, s.name, s.slug, s.primary_skill as "primarySkill",
+          1 - (s.skill_vector <=> (SELECT job_vector FROM jobs WHERE id = $1)) as "similarity"
+        FROM students s
+        WHERE s.id NOT IN (${appliedStudentIds.length > 0 ? appliedStudentIds.map(id => `'${id}'`).join(',') : "'none'"})
+        ORDER BY s.skill_vector <=> (SELECT job_vector FROM jobs WHERE id = $1)
+        LIMIT 5
+      `, id);
+    } catch (e) {
+      console.error("Vector search failed:", e);
+      // Fallback to simple query if vector search fails
+      sourcedCandidates = await prisma.student.findMany({
+        where: { id: { notIn: appliedStudentIds } },
+        take: 5
+      });
+    }
+
+    res.json({
+      job,
+      sourcedCandidates
+    });
   } catch (error) {
     next(error);
   }

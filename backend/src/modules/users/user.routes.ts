@@ -52,8 +52,13 @@ router.post('/student/interviews/:interviewId/complete', requireStudent, intervi
 
 // Company routes
 router.get('/company/dashboard', requireCompany, userController.getCompanyDashboard);
+router.get('/company/analytics', requireCompany, userController.getCompanyAnalytics);
 router.get('/company/profile', requireCompany, userController.getCompanyProfile);
 router.get('/company/candidates', requireCompany, userController.getCompanyCandidates);
 router.get('/company/search', requireCompany, userController.searchCandidates);
+
+// Employer Interview Mgt
+router.post('/company/interviews', requireCompany, interviewController.scheduleInterview);
+router.get('/company/interviews', requireCompany, interviewController.getCompanyInterviews);
 
 export default router;

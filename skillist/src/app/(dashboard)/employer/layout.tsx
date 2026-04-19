@@ -1,12 +1,29 @@
+"use client";
+
 import { ReactNode } from "react";
-import { Building2, LayoutDashboard, Search, Users, Settings, Zap } from "lucide-react";
+import { 
+  Building2, LayoutDashboard, Search, 
+  Users, Settings, Zap, BarChart3, Calendar 
+} from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export default function EmployerLayout({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+
+  const navItems = [
+    { href: "/employer", label: "Command Center", icon: LayoutDashboard },
+    { href: "/employer/jobs", label: "Job Postings", icon: Search },
+    { href: "/employer/candidates", label: "Talent Pipeline", icon: Users },
+    { href: "/employer/interviews", label: "Interview Hub", icon: Calendar },
+    { href: "/employer/analytics", label: "Pipeline Insights", icon: BarChart3 },
+  ];
+
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-background text-foreground">
       {/* Sidebar for Employer */}
-      <aside className="w-64 border-r border-border bg-card/50 backdrop-blur-xl flex flex-col pt-6">
+      <aside className="w-64 border-r border-border bg-card/50 backdrop-blur-xl flex flex-col pt-6 fixed inset-y-0 left-0">
         <div className="px-6 mb-8 flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center">
             <Building2 className="w-4 h-4 text-indigo-400" />
@@ -15,22 +32,28 @@ export default function EmployerLayout({ children }: { children: ReactNode }) {
         </div>
 
         <nav className="flex-1 px-4 space-y-2">
-          <Link href="/employer" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-primary bg-primary/10 transition-colors border border-primary/10">
-            <LayoutDashboard className="w-4 h-4" />
-            Command Center
-          </Link>
-          <Link href="/employer/jobs" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground hover:bg-white/5 transition-colors">
-            <Search className="w-4 h-4" />
-            Job Postings
-          </Link>
-          <Link href="/employer/candidates" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground hover:bg-white/5 transition-colors">
-            <Users className="w-4 h-4" />
-            Talent Pipeline
-          </Link>
+          {navItems.map((item) => {
+            const isActive = pathname === item.href || (item.href !== "/employer" && pathname?.startsWith(item.href));
+            return (
+              <Link 
+                key={item.href}
+                href={item.href} 
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-all border border-transparent",
+                  isActive 
+                    ? "text-indigo-400 bg-indigo-500/10 border-indigo-500/20 shadow-sm" 
+                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                )}
+              >
+                <item.icon className={cn("w-4 h-4", isActive ? "text-indigo-400" : "")} />
+                {item.label}
+              </Link>
+            )
+          })}
         </nav>
 
         <div className="p-4 mt-auto border-t border-border/50">
-          <Link href="/settings" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground hover:bg-white/5 transition-colors mb-4">
+          <Link href="/employer/settings" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground hover:bg-white/5 transition-colors mb-4">
             <Settings className="w-4 h-4" />
             Settings
           </Link>
@@ -42,7 +65,7 @@ export default function EmployerLayout({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 ml-64 overflow-y-auto">
         {children}
       </main>
     </div>

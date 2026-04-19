@@ -267,7 +267,8 @@ model Company {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  jobs Job[]
+  jobs           Job[]
+  mockInterviews MockInterview[]
 
   @@map("companies")
 }
@@ -285,9 +286,10 @@ model Job {
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
-  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  skills       JobSkill[]
-  applications Application[]
+  company        Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  skills         JobSkill[]
+  applications   Application[]
+  mockInterviews MockInterview[]
 
   @@map("jobs")
 }
@@ -399,14 +401,19 @@ model RoadmapStep {
 model MockInterview {
   id          String   @id // nanoid
   studentId   String   @map("student_id")
+  companyId   String?  @map("company_id")
+  jobId       String?  @map("job_id")
   role        String
   score       Int?
   feedback    String?
-  status      String   @default("scheduled") // scheduled, completed, cancelled
+  status      String   @default("scheduled") // scheduled, in_progress, completed, cancelled
+  scheduledAt DateTime? @map("scheduled_at")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  company Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  job     Job?     @relation(fields: [jobId], references: [id], onDelete: SetNull)
   messages InterviewMessage[]
 
   @@map("mock_interviews")

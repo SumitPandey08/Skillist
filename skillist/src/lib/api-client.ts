@@ -4,7 +4,7 @@ export async function fetchFromBackend(path: string, options: RequestInit = {}) 
 
   if (isServer) {
     // On server, use the internal backend URL (but this client version shouldn't be used on server)
-    backendUrl = process.env.BACKEND_URL ? `${process.env.BACKEND_URL}/api/v1` : 'http://localhost:3001/api/v1'
+    backendUrl = process.env.BACKEND_URL ? `${process.env.BACKEND_URL}/api/v1` : 'http://127.0.0.1:3001/api/v1'
   } else {
     // On client, use the rewrite path or public backend URL
     backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || '/api/backend'
