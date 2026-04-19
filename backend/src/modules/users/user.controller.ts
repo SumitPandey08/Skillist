@@ -79,6 +79,31 @@ export const getStudentFullProfile = async (req: any, res: Response, next: NextF
   }
 };
 
+export const getStudentById = async (req: any, res: Response, next: NextFunction) => {
+  const { studentId } = req.params;
+  try {
+    const student = await prisma.student.findUnique({
+      where: { id: studentId },
+      include: {
+        user: true,
+        skills: { include: { skill: true } },
+        projects: true,
+        experience: true,
+        education: true,
+        certifications: true
+      }
+    });
+    
+    if (!student) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+    
+    res.json({ student });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const addSkill = async (req: any, res: Response, next: NextFunction) => {
   const userId = req.auth.userId;
   const { name, category, proficiency } = req.body;

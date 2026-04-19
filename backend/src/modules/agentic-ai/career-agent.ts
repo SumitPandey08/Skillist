@@ -1,5 +1,5 @@
 import { StateGraph, END } from "@langchain/langgraph";
-import { AgentState, getModel } from "./base-agent";
+import { AgentState, getStructuredModel } from "./base-agent";
 import { z } from "zod";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 
@@ -25,8 +25,8 @@ const CareerRecommendationSchema = z.object({
   }))
 });
 
-const questionModel = getModel(0.5).withStructuredOutput(CareerQuestionSchema);
-const recommendationModel = getModel(0.2).withStructuredOutput(CareerRecommendationSchema);
+const questionModel = getStructuredModel(CareerQuestionSchema, 0.5);
+const recommendationModel = getStructuredModel(CareerRecommendationSchema, 0.2);
 
 async function generateCareerQuestions(state: typeof AgentState.State) {
   const currentSkills = state.currentSkills || [];

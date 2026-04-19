@@ -11,8 +11,15 @@ interface InterviewEvaluation {
   technicalScore: number
   communicationScore: number
   behavioralScore: number
+  problemSolvingScore: number
+  roleSpecificScore: number
   strengths: string[]
   improvements: string[]
+  detailedBreakdown: {
+    technical: string
+    communication: string
+    behavioral: string
+  }
 }
 
 export function InterviewFeedback({ evaluation, role }: { evaluation: InterviewEvaluation, role: string }) {
@@ -20,6 +27,8 @@ export function InterviewFeedback({ evaluation, role }: { evaluation: InterviewE
     { label: 'Technical', score: evaluation.technicalScore, max: 10, color: 'text-blue-400' },
     { label: 'Communication', score: evaluation.communicationScore, max: 10, color: 'text-purple-400' },
     { label: 'Behavioral', score: evaluation.behavioralScore, max: 10, color: 'text-green-400' },
+    { label: 'Problem Solving', score: evaluation.problemSolvingScore, max: 10, color: 'text-orange-400' },
+    { label: 'Role Specific', score: evaluation.roleSpecificScore, max: 10, color: 'text-pink-400' },
   ]
 
   return (
@@ -89,6 +98,21 @@ export function InterviewFeedback({ evaluation, role }: { evaluation: InterviewE
             <p className="text-muted-foreground leading-relaxed italic">
                 "{evaluation.feedback}"
             </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-5 rounded-2xl bg-blue-400/5 border border-blue-400/10 space-y-2">
+                <h5 className="text-xs font-bold uppercase tracking-widest text-blue-400">Technical</h5>
+                <p className="text-xs text-muted-foreground leading-relaxed">{evaluation.detailedBreakdown.technical}</p>
+            </div>
+            <div className="p-5 rounded-2xl bg-purple-400/5 border border-purple-400/10 space-y-2">
+                <h5 className="text-xs font-bold uppercase tracking-widest text-purple-400">Communication</h5>
+                <p className="text-xs text-muted-foreground leading-relaxed">{evaluation.detailedBreakdown.communication}</p>
+            </div>
+            <div className="p-5 rounded-2xl bg-green-400/5 border border-green-400/10 space-y-2">
+                <h5 className="text-xs font-bold uppercase tracking-widest text-green-400">Behavioral</h5>
+                <p className="text-xs text-muted-foreground leading-relaxed">{evaluation.detailedBreakdown.behavioral}</p>
+            </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

@@ -12,6 +12,7 @@ router.get('/portfolio/:slug', userController.getPortfolioBySlug);
 // Student routes
 router.get('/student/dashboard', requireStudent, userController.getStudentDashboard);
 router.get('/student/profile', requireStudent, userController.getStudentFullProfile);
+router.get('/student/:studentId', requireStudent, userController.getStudentById);
 router.patch('/student/bio', requireStudent, userController.updateBio);
 router.patch('/student/platform-connections', requireStudent, userController.updatePlatformConnections);
 

@@ -1,5 +1,5 @@
 import { StateGraph, END } from "@langchain/langgraph";
-import { AgentState, getModel } from "./base-agent";
+import { AgentState, getStructuredModel } from "./base-agent";
 import { z } from "zod";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 
@@ -18,7 +18,7 @@ const SkillAnalysisSchema = z.object({
   suggestedRoles: z.array(z.string())
 });
 
-const model = getModel(0).withStructuredOutput(SkillAnalysisSchema);
+const model = getStructuredModel(SkillAnalysisSchema, 0);
 
 async function analyzeSkills(state: typeof AgentState.State) {
   const skills = state.currentSkills;

@@ -24,7 +24,7 @@ export async function geminiGenerateContent(
 /**
  * Recursively removes unsupported fields from JSON schema for Gemini API
  */
-function cleanSchema(obj: any): any {
+export function cleanSchema(obj: any): any {
   if (!obj || typeof obj !== 'object') return obj;
 
   if (Array.isArray(obj)) {
@@ -33,7 +33,7 @@ function cleanSchema(obj: any): any {
 
   const cleaned: any = {};
   for (const key in obj) {
-    if (['$schema', 'definitions', '$defs', 'additionalProperties'].includes(key)) {
+    if (['$schema', 'definitions', '$defs', 'additionalProperties', 'default'].includes(key)) {
       continue;
     }
     cleaned[key] = cleanSchema(obj[key]);

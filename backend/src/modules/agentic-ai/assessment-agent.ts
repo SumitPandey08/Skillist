@@ -1,5 +1,5 @@
 import { StateGraph, END } from "@langchain/langgraph";
-import { AgentState, getModel } from "./base-agent";
+import { AgentState, getStructuredModel } from "./base-agent";
 import { z } from "zod";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 
@@ -13,7 +13,7 @@ const MCQSchema = z.object({
   }))
 });
 
-const model = getModel(0.2).withStructuredOutput(MCQSchema);
+const model = getStructuredModel(MCQSchema, 0.2);
 
 async function generateMCQs(state: typeof AgentState.State) {
   const skill = state.currentSkills[0]; // For assessment, we test one skill at a time

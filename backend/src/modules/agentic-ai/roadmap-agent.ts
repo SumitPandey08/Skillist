@@ -1,5 +1,5 @@
 import { StateGraph, END } from "@langchain/langgraph";
-import { AgentState, getModel } from "./base-agent";
+import { AgentState, getStructuredModel } from "./base-agent";
 import { z } from "zod";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 
@@ -24,7 +24,7 @@ const RefinedRoadmapSchema = z.object({
   steps: z.array(RefinedStepSchema),
 });
 
-const model = getModel().withStructuredOutput(RefinedRoadmapSchema);
+const model = getStructuredModel(RefinedRoadmapSchema);
 
 async function refineRoadmap(state: typeof AgentState.State) {
   const prompt = `
