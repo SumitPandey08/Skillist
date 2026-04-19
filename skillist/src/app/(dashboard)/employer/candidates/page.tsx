@@ -1,5 +1,5 @@
 import { auth } from '@clerk/nextjs/server'
-import { fetchFromBackend } from '@/lib/api'
+import { fetchFromBackend } from '@/lib/api-server'
 import { redirect } from 'next/navigation'
 import { ApplicantTable } from '@/components/jobs/applicant-table'
 import { Sparkles, Users } from 'lucide-react'

@@ -1,5 +1,5 @@
 import { auth } from '@clerk/nextjs/server'
-import { fetchFromBackend } from '@/lib/api'
+import { fetchFromBackend } from '@/lib/api-server'
 import { redirect } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { BioEditor } from '@/components/dashboard/bio-editor'

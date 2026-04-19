@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { supabaseAdmin } from '@/lib/supabase'
-import { fetchFromBackend } from '@/lib/api'
+import { fetchFromBackend } from '@/lib/api-server'
 import { nanoid } from 'nanoid'
 
 export async function triggerSkillAnalysis(targetRole: string, currentSkills: string[]) {

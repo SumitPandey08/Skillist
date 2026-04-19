@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import { auth } from '@clerk/nextjs/server'
-import { fetchFromBackend } from '@/lib/api'
+import { fetchFromBackend } from '@/lib/api-server'
 import { redirect } from 'next/navigation'
 import { StudentDashboardLayout } from '@/components/dashboard/student/student-dashboard-layout'
 import { SkillTest } from '@/components/assessment/skill-test'

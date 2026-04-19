@@ -2,7 +2,7 @@
 
 import { auth } from '@clerk/nextjs/server'
 import { revalidatePath } from 'next/cache'
-import { fetchFromBackend } from '@/lib/api'
+import { fetchFromBackend } from '@/lib/api-server'
 
 export async function triggerInterviewAnalysis(interviewId: string, role: string, transcript: any[]) {
   const { userId } = await auth()

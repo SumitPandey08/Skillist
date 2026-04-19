@@ -1,5 +1,5 @@
 import { auth } from '@clerk/nextjs/server'
-import { fetchFromBackend } from '@/lib/api'
+import { fetchFromBackend } from '@/lib/api-server'
 import { notFound, redirect } from 'next/navigation'
 import { ScoreRadarChart } from '@/components/jobs/score-radar-chart'
 import { ArrowLeft, Mail, ExternalLink } from 'lucide-react'

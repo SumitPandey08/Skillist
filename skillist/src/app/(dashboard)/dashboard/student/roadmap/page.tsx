@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { StudentDashboardLayout } from '@/components/dashboard/student/student-dashboard-layout'
 import { RoadmapView } from '@/components/dashboard/student/roadmap-view'
 import { Target } from 'lucide-react'
-import { fetchFromBackend } from '@/lib/api'
+import { fetchFromBackend } from '@/lib/api-server'
 
 export default async function RoadmapPage() {
   const { userId } = await auth()

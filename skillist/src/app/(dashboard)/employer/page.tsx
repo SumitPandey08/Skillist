@@ -1,5 +1,5 @@
 import { auth } from '@clerk/nextjs/server'
-import { fetchFromBackend } from '@/lib/api'
+import { fetchFromBackend } from '@/lib/api-server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, Sparkles } from 'lucide-react'

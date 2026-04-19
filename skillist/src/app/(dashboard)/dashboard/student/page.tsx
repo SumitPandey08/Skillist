@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { auth } from '@clerk/nextjs/server'
-import { fetchFromBackend } from '@/lib/api'
+import { fetchFromBackend } from '@/lib/api-server'
 import { redirect } from 'next/navigation'
 import { HeroSection } from '@/components/dashboard/student/hero-section'
 import { TopSkills } from '@/components/dashboard/student/top-skills'

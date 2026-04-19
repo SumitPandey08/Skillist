@@ -7,7 +7,7 @@ import { fetchGitHubStats } from '@/lib/integrations/github'
 import { fetchLeetCodeStats } from '@/lib/integrations/leetcode'
 import { fetchCodeforcesStats } from '@/lib/integrations/codeforces'
 import { PlatformStats } from '@/components/portfolio/platform-stats'
-import { fetchFromBackend } from '@/lib/api'
+import { fetchFromBackend } from '@/lib/api-server'
 
 async function getPortfolioData(slug: string) {
   try {

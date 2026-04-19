@@ -1,4 +1,4 @@
-import { fetchFromBackend } from '@/lib/api'
+import { fetchFromBackend } from '@/lib/api-server'
 
 const mockQuery = (endpoint: string) => ({
   findMany: async (options: any) => {

@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { MapPin, Briefcase, Calendar, ArrowLeft, Building2, CheckCircle2 } from 'lucide-react'
 import { auth } from '@clerk/nextjs/server'
 import { ApplyButton } from '@/components/jobs/apply-button'
-import { fetchFromBackend } from '@/lib/api'
+import { fetchFromBackend } from '@/lib/api-server'
 
 export default async function JobDetailPage({ params }: { params: { id: string } }) {
   const { id } = await params

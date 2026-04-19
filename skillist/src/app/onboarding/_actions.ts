@@ -1,6 +1,6 @@
 'use server'
 
-import { fetchFromBackend } from '@/lib/api'
+import { fetchFromBackend } from '@/lib/api-server'
 
 export async function completeOnboarding(formData: FormData) {
   console.log('[ACTION] completeOnboarding started');

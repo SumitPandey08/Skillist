@@ -18,6 +18,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
+import { getStudentAnalytics } from '@/app/(dashboard)/dashboard/student/analytics-actions'
 
 interface TrackingWidgetProps {
   userId: string
@@ -31,16 +32,9 @@ export function TrackingWidget({ userId }: TrackingWidgetProps) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [activityRes, statsRes] = await Promise.all([
-          fetch('/api/proxy/analytics/activity'),
-          fetch('/api/proxy/analytics/stats')
-        ])
-        
-        const activityData = await activityRes.json()
-        const statsData = await statsRes.json()
-        
-        setActivity(activityData)
-        setStats(statsData)
+        const { activity, stats } = await getStudentAnalytics()
+        setActivity(activity || [])
+        setStats(stats)
       } catch (error) {
         console.error('Failed to fetch tracking data:', error)
       } finally {

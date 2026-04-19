@@ -47,12 +47,19 @@ export const requireStudent = [
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (user?.role !== 'student') {
-      console.log(`Forbidden: User role is ${user?.role}, expected student`);
-      return res.status(403).json({ error: 'Forbidden: Student access only' });
+    try {
+      console.log("requireStudent - fetching user from DB...");
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+      console.log("requireStudent - user fetched:", user?.id, "role:", user?.role);
+      if (user?.role !== 'student') {
+        console.log(`Forbidden: User role is ${user?.role}, expected student`);
+        return res.status(403).json({ error: 'Forbidden: Student access only' });
+      }
+      next();
+    } catch (dbError: any) {
+      console.error("requireStudent DB error:", dbError.message);
+      next(dbError);
     }
-    next();
   }
 ];
 
