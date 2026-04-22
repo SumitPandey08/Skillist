@@ -49,6 +49,10 @@ export const getStudentDashboard = async (req: any, res: Response, next: NextFun
         mockInterviews: {
           orderBy: { createdAt: 'desc' },
           take: 3
+        },
+        careerRecommendations: {
+          orderBy: { createdAt: 'desc' },
+          take: 1
         }
       }
     });

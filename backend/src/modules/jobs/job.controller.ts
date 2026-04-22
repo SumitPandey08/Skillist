@@ -16,6 +16,56 @@ export const getJobs = async (req: Request, res: Response, next: NextFunction) =
   }
 };
 
+export const getRecommendedJobs = async (req: any, res: Response, next: NextFunction) => {
+  const userId = req.auth.userId;
+  try {
+    // Attempt vector similarity search
+    let recommendedJobs: any[] = [];
+    try {
+      recommendedJobs = await prisma.$queryRawUnsafe(`
+        SELECT 
+          j.id, j.title, j.location, j.salary_range as "salaryRange", j.job_type as "jobType",
+          c.company_name as "companyName",
+          1 - (j.job_vector <=> (SELECT skill_vector FROM students WHERE id = $1)) as "matchScore"
+        FROM jobs j
+        JOIN companies c ON j.company_id = c.id
+        WHERE j.status = 'active'
+        AND j.job_vector IS NOT NULL
+        ORDER BY j.job_vector <=> (SELECT skill_vector FROM students WHERE id = $1)
+        LIMIT 3
+      `, userId);
+      
+      // Convert matchScore to percentage
+      recommendedJobs = recommendedJobs.map(j => ({
+        ...j,
+        matchScore: Math.round(j.matchScore * 100)
+      }));
+    } catch (e) {
+      console.error("Vector recommendation failed:", e);
+      // Fallback to latest jobs
+      const latestJobs = await prisma.job.findMany({
+        where: { status: 'active' },
+        include: { company: true },
+        orderBy: { createdAt: 'desc' },
+        take: 3
+      });
+      recommendedJobs = latestJobs.map(j => ({
+        id: j.id,
+        title: j.title,
+        location: j.location,
+        salaryRange: j.salaryRange,
+        jobType: j.jobType,
+        companyName: (j as any).company.companyName,
+        matchScore: 75 // Mock score for fallback
+      }));
+    }
+
+    res.json(recommendedJobs);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getCompanyJobs = async (req: any, res: Response, next: NextFunction) => {
   const userId = req.auth?.userId;
   try {
