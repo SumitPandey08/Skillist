@@ -25,7 +25,7 @@ export const getCurrentUser = async (req: any, res: Response, next: NextFunction
 
 export const onboarding = async (req: any, res: Response, next: NextFunction) => {
   const userId = req.auth?.userId;
-  const { role, name, primarySkill, companyName, industry } = req.body;
+  const { role, name, primarySkill, currentGrade, intent, companyName, industry } = req.body;
 
   if (!userId) {
     console.log('Onboarding failed: No userId in req.auth. Auth:', req.auth);
@@ -66,8 +66,8 @@ export const onboarding = async (req: any, res: Response, next: NextFunction) =>
       const slug = slugify(`${name}-${nanoid(4)}`, { lower: true });
       await prisma.student.upsert({
         where: { id: userId },
-        update: { name, slug, primarySkill },
-        create: { id: userId, name, slug, primarySkill },
+        update: { name, slug, primarySkill, currentGrade, intent },
+        create: { id: userId, name, slug, primarySkill, currentGrade, intent },
       });
     } else if (role === 'company') {
       await prisma.company.upsert({

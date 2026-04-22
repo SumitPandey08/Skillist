@@ -1,83 +1,92 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BrainCircuit, LineChart, FileText, SearchCode, Sparkles, Target, Zap, ShieldCheck } from "lucide-react";
+import { Compass, LayoutDashboard, MessageSquareText, ShieldCheck, GitBranch, Briefcase } from "lucide-react";
 
 const features = [
   {
-    title: "AI Match Scoring",
-    description: "Our proprietary 40/20/20/20 formula uses vector embeddings to calculate the exact semantic fit between your skills and company needs.",
-    icon: <SearchCode className="w-6 h-6 text-primary" />,
+    title: "AI Career Pathfinder",
+    description: "Find your ideal career path with confidence using predictive intelligence.",
+    icon: <Compass className="h-8 w-8 text-emerald-400" />,
+    gradient: "from-emerald-500/10 to-teal-500/5",
   },
   {
-    title: "ATS-Optimized Tailoring",
-    description: "Instantly rewrite your resume bullet points using AI to highlight the exact experience recruiters are looking for in specific roles.",
-    icon: <FileText className="w-6 h-6 text-primary" />,
+    title: "Skill Intelligence Dashboard",
+    description: "Track real progress, not assumptions, with deep analytics.",
+    icon: <LayoutDashboard className="h-8 w-8 text-blue-400" />,
+    gradient: "from-blue-500/10 to-cyan-500/5",
   },
   {
-    title: "Semantic Job Discovery",
-    description: "Don't just search for keywords. Our AI understands the context of your skills to find roles you didn't even know you were qualified for.",
-    icon: <Sparkles className="w-6 h-6 text-primary" />,
+    title: "AI Interviewer",
+    description: "Practice with structured, real-time feedback in simulated environments.",
+    icon: <MessageSquareText className="h-8 w-8 text-purple-400" />,
+    gradient: "from-purple-500/10 to-fuchsia-500/5",
   },
   {
-    title: "Ranked Pipelines",
-    description: "For employers, candidates are automatically ranked by Match Score, eliminating hours of manual resume screening.",
-    icon: <Target className="w-6 h-6 text-primary" />,
+    title: "Skill Validation Engine",
+    description: "Prove what you actually know through comprehensive skill assessments.",
+    icon: <ShieldCheck className="h-8 w-8 text-rose-400" />,
+    gradient: "from-rose-500/10 to-pink-500/5",
   },
   {
-    title: "Verified Skill Identity",
-    description: "Build a persistent professional profile centered on validated projects and certifications rather than just static text.",
-    icon: <ShieldCheck className="w-6 h-6 text-primary" />,
+    title: "GitHub & Coding Integration",
+    description: "Connect your repo to show real work, commits, and true capabilities.",
+    icon: <GitBranch className="h-8 w-8 text-slate-400" />,
+    gradient: "from-slate-500/10 to-gray-500/5",
   },
   {
-    title: "Real-time Analytics",
-    description: "Track your profile completeness and application status with deep insights into how you compare to the market.",
-    icon: <LineChart className="w-6 h-6 text-primary" />,
+    title: "Smart Job Matching",
+    description: "Get matched directly to vetted employers based solely on verified skills.",
+    icon: <Briefcase className="h-8 w-8 text-amber-400" />,
+    gradient: "from-amber-500/10 to-yellow-500/5",
   },
 ];
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="py-24 bg-card relative overflow-hidden text-card-foreground">
-      <div className="container px-4 md:px-6 relative z-10 mx-auto">
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-20">
-          <motion.h2 
+    <section className="py-24 bg-background">
+      <div className="container mx-auto px-4 max-w-7xl">
+        <div className="text-center mb-16">
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-5xl font-bold tracking-tight"
+            className="text-4xl md:text-5xl font-bold tracking-tight mb-4"
           >
-            Intelligence at Every Step
+            Core Features
           </motion.h2>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-lg text-muted-foreground leading-relaxed"
+            className="text-lg text-muted-foreground mx-auto max-w-2xl"
           >
-            ECHFLUX uses state-of-the-art Large Language Models and Vector Databases to bridge the gap between human potential and organizational need.
+            Everything you need to level up your career trajectory, packed into one seamless platform.
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {features.map((feature, idx) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {features.map((feature, index) => (
             <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              key={index}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: idx * 0.1, duration: 0.5 }}
-              whileHover={{ y: -10 }}
-              className="relative p-8 rounded-3xl glass border border-white/5 shadow-xl hover:shadow-2xl hover:shadow-primary/20 hover:border-primary/30 transition-all duration-500 group overflow-hidden"
+              transition={{ delay: index * 0.1 }}
+              className={`relative overflow-hidden group p-8 rounded-3xl border bg-gradient-to-br ${feature.gradient} backdrop-blur-sm transition-all hover:shadow-xl hover:-translate-y-1`}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 group-hover:scale-150 transition-all duration-500">
+                {feature.icon}
+              </div>
               <div className="relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary/20 transition-transform duration-500">
+                <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-background/80 shadow-sm backdrop-blur-md">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-bold mb-3 text-foreground group-hover:text-primary transition-colors">{feature.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{feature.description}</p>
+                <h3 className="text-2xl font-bold mb-3">{feature.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  {feature.description}
+                </p>
               </div>
             </motion.div>
           ))}

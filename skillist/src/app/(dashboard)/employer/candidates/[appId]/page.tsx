@@ -5,15 +5,17 @@ import { ScoreRadarChart } from '@/components/jobs/score-radar-chart'
 import { 
   ArrowLeft, Mail, ExternalLink, Brain, 
   Sparkles, CheckCircle2, User, Building2, 
-  Briefcase, Zap, Star, ShieldCheck, Github, 
-  Linkedin, Code2
+  Briefcase, Zap, Star, ShieldCheck, 
+  Code2, ArrowRight
 } from 'lucide-react'
+import { Github } from '@/components/icons'
 import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatusSelect } from '@/components/jobs/status-select'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 
 export default async function ApplicantDetailPage(
   props: { params: Promise<{ appId: string }> }
@@ -84,7 +86,7 @@ export default async function ApplicantDetailPage(
                {student.linkedinUrl && (
                   <a href={student.linkedinUrl} target="_blank" rel="noopener">
                     <Badge className="bg-white/5 border-white/10 text-muted-foreground hover:bg-white/10 transition-colors px-3 py-1 gap-2 font-bold uppercase text-[9px] tracking-widest">
-                        <Linkedin className="h-3 w-3" /> LinkedIn
+                        <User className="h-3 w-3" /> LinkedIn
                     </Badge>
                   </a>
                )}
@@ -231,7 +233,7 @@ export default async function ApplicantDetailPage(
                      </div>
                      <div>
                         <p className="text-sm font-bold">Top Match</p>
-                        <p className="text-[10px] font-black uppercase text-muted-foreground">Match > 80% Tier</p>
+                        <p className="text-[10px] font-bold uppercase text-muted-foreground">Match &gt; 80% Tier</p>
                      </div>
                   </div>
                   <div className="flex items-center gap-4">

@@ -7,6 +7,8 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatedButton } from "@/components/ui/animated-button";
 
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+
 export function Navbar() {
   const { scrollY } = useScroll();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -27,20 +29,20 @@ export function Navbar() {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className={`fixed top-0 inset-x-0 z-50 flex justify-center py-4 px-4 transition-all duration-300 ${isScrolled ? "pt-2" : "pt-6"}`}
     >
-      <div 
-        className={`w-full max-w-5xl flex items-center justify-between px-6 py-3 rounded-full border border-border/40 backdrop-blur-md transition-all duration-300 ${
-          isScrolled ? "bg-background/80 shadow-[0_0_20px_rgba(var(--primary),0.1)]" : "bg-background/50"
-        }`}
+      <div
+        className={`w-full max-w-5xl flex items-center justify-between px-6 py-3 rounded-full border border-border/40 backdrop-blur-md transition-all duration-300 ${isScrolled ? "bg-background/80 shadow-[0_0_20px_rgba(var(--primary),0.1)]" : "bg-background/50"
+          }`}
       >
         <Link href="/" className="font-extrabold text-xl tracking-tight flex items-center gap-2">
           <div className="w-6 h-6 rounded bg-gradient-to-tr from-primary to-indigo-500 font-sans text-xs flex items-center justify-center font-bold text-white shadow-sm">E</div>
-          <span className="hidden sm:inline-block">ECHFLUX</span>
+          <span className="hidden sm:inline-block">SKILLIST</span>
         </Link>
 
         {isLoaded && (
-          <nav className="flex items-center gap-6">
+          <nav className="flex items-center gap-4">
+            <ThemeToggle />
             {!isSignedIn ? (
-              <>
+              <div className="flex items-center gap-4 ml-2 border-l border-border/50 pl-4">
                 <Link href="/sign-in" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                   Sign In
                 </Link>
@@ -49,20 +51,20 @@ export function Navbar() {
                     Get Started
                   </AnimatedButton>
                 </Link>
-              </>
+              </div>
             ) : (
-              <>
+              <div className="flex items-center gap-4 ml-2 border-l border-border/50 pl-4">
                 <Link href="/dashboard" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mr-2">
                   Dashboard
                 </Link>
-                <UserButton 
+                <UserButton
                   appearance={{
                     elements: {
                       avatarBox: "w-9 h-9 border-2 border-primary/20 hover:border-primary/50 transition-colors"
                     }
-                  }} 
+                  }}
                 />
-              </>
+              </div>
             )}
           </nav>
         )}

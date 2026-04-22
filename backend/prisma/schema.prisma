@@ -1,14 +1,451 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
-  extensions = [pgvector(map: "vector")]
+  provider   = "postgresql"
+  extensions = [uuid_ossp(map: "uuid-ossp", schema: "extensions"), vector]
+}
+
+model User {
+  id              String           @id
+  email           String           @unique
+  role            UserRole?
+  plan            PlanType         @default(free)
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  analyticsEvents AnalyticsEvent[]
+  company         Company?
+  notifications   Notification[]
+  student         Student?
+
+  @@map("users")
+}
+
+model Student {
+  id                    String                 @id
+  name                  String
+  slug                  String                 @unique
+  bio                   String?
+  currentGrade          String?                @map("current_grade")
+  intent                String?                @default("explore") // "explore" or "advance"
+  primarySkill          String?                @map("primary_skill")
+  resumeUrl             String?                @map("resume_url")
+  githubUsername        String?                @map("github_username")
+  leetcodeUsername      String?                @map("leetcode_username")
+  codeforcesUsername    String?                @map("codeforces_username")
+  githubUrl             String?                @map("github_url")
+  leetcodeUrl           String?                @map("leetcode_url")
+  codeforcesUrl         String?                @map("codeforces_url")
+  linkedinUrl           String?                @map("linkedin_url")
+  skillVector           Unsupported("vector")? @map("skill_vector")
+  createdAt             DateTime               @default(now()) @map("created_at")
+  updatedAt             DateTime               @updatedAt @map("updated_at")
+  applications          Application[]
+  assessmentResults     AssessmentResult[]
+  careerRecommendations CareerRecommendation[]
+  certifications        Certification[]
+  education             Education[]
+  experience            Experience[]
+  externalAccounts      ExternalAccount[]
+  mockInterviews        MockInterview[]
+  normalizedSkills      NormalizedSkill[]
+  projects              Project[]
+  recommendations       Recommendation[]
+  resumes               ResumeVersion[]
+  originalResumes       Resume[]
+  roadmaps              Roadmap[]
+  skills                StudentSkill[]
+  user                  User                   @relation(fields: [id], references: [id], onDelete: Cascade)
+  scores                UserScore?
+
+  @@map("students")
+}
+
+model AssessmentResult {
+  id                    String                 @id
+  studentId             String                 @map("student_id")
+  skillName             String                 @map("skill_name")
+  score                 Int                    @default(0)
+  totalQuestions        Int                    @default(0) @map("total_questions")
+  correctAnswers        Int                    @default(0) @map("correct_answers")
+  identifiedGaps        String?                @map("identified_gaps")
+  createdAt             DateTime               @default(now()) @map("created_at")
+  student               Student                @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  careerRecommendations CareerRecommendation[]
+
+  @@map("assessment_results")
+}
+
+model CareerRecommendation {
+  id                 String            @id
+  studentId          String            @map("student_id")
+  assessmentResultId String?           @map("assessment_result_id")
+  suggestedRoles     String            @map("suggested_roles")
+  gapAnalysis        String            @map("gap_analysis")
+  actionPlan         String            @map("action_plan")
+  createdAt          DateTime          @default(now()) @map("created_at")
+  assessmentResult   AssessmentResult? @relation(fields: [assessmentResultId], references: [id])
+  student            Student           @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("career_recommendations")
+}
+
+model ExternalAccount {
+  id           String        @id
+  studentId    String        @map("student_id")
+  platform     String
+  username     String
+  accessToken  String?       @map("access_token")
+  lastSynced   DateTime?     @map("last_synced")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  student      Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  githubData   GitHubData?
+  leetcodeData LeetCodeData?
+
+  @@unique([studentId, platform])
+  @@map("external_accounts")
+}
+
+model GitHubData {
+  id                String          @id
+  externalAccountId String          @unique @map("external_account_id")
+  reposCount        Int             @default(0) @map("repos_count")
+  followers         Int             @default(0)
+  totalStars        Int             @default(0) @map("total_stars")
+  topLanguages      String?
+  commitActivity    String?         @map("commit_activity")
+  lastUpdated       DateTime        @default(now()) @map("last_updated")
+  externalAccount   ExternalAccount @relation(fields: [externalAccountId], references: [id], onDelete: Cascade)
+
+  @@map("github_data")
+}
+
+model LeetCodeData {
+  id                String          @id
+  externalAccountId String          @unique @map("external_account_id")
+  ranking           Int             @default(0)
+  totalSolved       Int             @default(0) @map("total_solved")
+  easySolved        Int             @default(0) @map("easy_solved")
+  mediumSolved      Int             @default(0) @map("medium_solved")
+  hardSolved        Int             @default(0) @map("hard_solved")
+  contestRating     Float?          @map("contest_rating")
+  streak            Int             @default(0)
+  lastUpdated       DateTime        @default(now()) @map("last_updated")
+  externalAccount   ExternalAccount @relation(fields: [externalAccountId], references: [id], onDelete: Cascade)
+
+  @@map("leetcode_data")
+}
+
+model NormalizedSkill {
+  id         String   @id
+  studentId  String   @map("student_id")
+  name       String
+  category   String
+  score      Int      @default(0)
+  confidence Int      @default(0)
+  source     String
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  student    Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("normalized_skills")
+}
+
+model UserScore {
+  id                  String   @id
+  studentId           String   @unique @map("student_id")
+  overallScore        Int      @default(0) @map("overall_score")
+  proficiencyScore    Int      @default(0) @map("proficiency_score")
+  consistencyScore    Int      @default(0) @map("consistency_score")
+  problemSolvingScore Int      @default(0) @map("problem_solving_score")
+  projectQualityScore Int      @default(0) @map("project_quality_score")
+  insights            String?
+  lastCalculated      DateTime @default(now()) @map("last_calculated")
+  student             Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("user_scores")
+}
+
+model Skill {
+  id            String         @id
+  name          String         @unique
+  category      String?
+  createdAt     DateTime       @default(now()) @map("created_at")
+  jobSkills     JobSkill[]
+  roadmapSteps  RoadmapStep[]
+  studentSkills StudentSkill[]
+
+  @@map("skills")
+}
+
+model StudentSkill {
+  studentId   String   @map("student_id")
+  skillId     String   @map("skill_id")
+  proficiency String   @default("beginner")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  skill       Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@id([studentId, skillId])
+  @@map("student_skills")
+}
+
+model Project {
+  id          String    @id
+  studentId   String    @map("student_id")
+  title       String
+  description String?
+  url         String?
+  imageUrl    String?   @map("image_url")
+  startDate   DateTime? @map("start_date")
+  endDate     DateTime? @map("end_date")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  student     Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("projects")
+}
+
+model Certification {
+  id            String    @id
+  studentId     String    @map("student_id")
+  name          String
+  issuer        String
+  issueDate     DateTime? @map("issue_date")
+  credentialUrl String?   @map("credential_url")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  student       Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("certifications")
+}
+
+model Company {
+  id             String          @id
+  name           String
+  companyName    String          @map("company_name")
+  industry       String?
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+  user           User            @relation(fields: [id], references: [id], onDelete: Cascade)
+  jobs           Job[]
+  mockInterviews MockInterview[]
+
+  @@map("companies")
+}
+
+model Job {
+  id             String                 @id
+  companyId      String                 @map("company_id")
+  title          String
+  description    String
+  location       String?
+  salaryRange    String?                @map("salary_range")
+  jobType        String?                @map("job_type")
+  status         JobStatus              @default(draft)
+  jobVector      Unsupported("vector")? @map("job_vector")
+  createdAt      DateTime               @default(now()) @map("created_at")
+  updatedAt      DateTime               @updatedAt @map("updated_at")
+  applications   Application[]
+  skills         JobSkill[]
+  company        Company                @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  mockInterviews MockInterview[]
+
+  @@map("jobs")
+}
+
+model Experience {
+  id          String    @id
+  studentId   String    @map("student_id")
+  title       String
+  company     String
+  location    String?
+  description String?
+  startDate   DateTime? @map("start_date")
+  endDate     DateTime? @map("end_date")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  student     Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("experience")
+}
+
+model Education {
+  id             String    @id
+  studentId      String    @map("student_id")
+  school         String
+  degree         String?
+  field          String?
+  graduationDate DateTime? @map("graduation_date")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  student        Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("education")
+}
+
+model Application {
+  id             String   @id
+  studentId      String   @map("student_id")
+  jobId          String   @map("job_id")
+  status         String   @default("pending")
+  matchScore     Int      @default(0) @map("match_score")
+  skillScore     Int      @default(0) @map("skill_score")
+  expScore       Int      @default(0) @map("exp_score")
+  projScore      Int      @default(0) @map("proj_score")
+  potentialScore Int      @default(0) @map("potential_score")
+  analysis       String?
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  job            Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  student        Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("applications")
+}
+
+model JobSkill {
+  jobId               String   @map("job_id")
+  skillId             String   @map("skill_id")
+  requiredProficiency String   @default("beginner") @map("required_proficiency")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+  job                 Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  skill               Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([jobId, skillId])
+  @@map("job_skills")
+}
+
+model Roadmap {
+  id          String        @id
+  studentId   String        @map("student_id")
+  targetRole  String        @map("target_role")
+  description String?
+  progress    Int           @default(0)
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  steps       RoadmapStep[]
+  student     Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("roadmaps")
+}
+
+model RoadmapStep {
+  id          String   @id
+  roadmapId   String   @map("roadmap_id")
+  title       String
+  description String?
+  notes       String?
+  resources   Json?
+  skillId     String?  @map("skill_id")
+  status      String   @default("pending")
+  order       Int
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  roadmap     Roadmap  @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+  skill       Skill?   @relation(fields: [skillId], references: [id])
+
+  @@map("roadmap_steps")
+}
+
+model MockInterview {
+  id          String             @id
+  studentId   String             @map("student_id")
+  role        String
+  score       Int?
+  feedback    String?
+  status      String             @default("scheduled")
+  createdAt   DateTime           @default(now()) @map("created_at")
+  updatedAt   DateTime           @updatedAt @map("updated_at")
+  companyId   String?            @map("company_id")
+  jobId       String?            @map("job_id")
+  scheduledAt DateTime?          @map("scheduled_at")
+  messages    InterviewMessage[]
+  company     Company?           @relation(fields: [companyId], references: [id])
+  job         Job?               @relation(fields: [jobId], references: [id])
+  student     Student            @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("mock_interviews")
+}
+
+model InterviewMessage {
+  id          String        @id
+  interviewId String        @map("interview_id")
+  role        String
+  content     String
+  createdAt   DateTime      @default(now()) @map("created_at")
+  interview   MockInterview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+
+  @@map("interview_messages")
+}
+
+model Resume {
+  id         String   @id
+  studentId  String   @map("student_id")
+  fileUrl    String   @map("file_url")
+  status     String   @default("pending")
+  parsedData String?  @map("parsed_data")
+  error      String?
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  student    Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("resumes")
+}
+
+model ResumeVersion {
+  id        String   @id
+  studentId String   @map("student_id")
+  jobTitle  String   @map("job_title")
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("resume_versions")
+}
+
+model Recommendation {
+  id          String   @id
+  studentId   String   @map("student_id")
+  type        String
+  title       String
+  description String?
+  link        String?
+  metadata    String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("recommendations")
+}
+
+model Notification {
+  id        String   @id
+  userId    String   @map("user_id")
+  type      String
+  title     String
+  message   String
+  isRead    Boolean  @default(false) @map("is_read")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model AnalyticsEvent {
+  id        String   @id
+  userId    String?  @map("user_id")
+  eventType String   @map("event_type")
+  payload   String?
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@map("analytics_events")
 }
 
 enum UserRole {
@@ -29,474 +466,4 @@ enum PlanType {
   starter
   growth
   enterprise
-}
-
-model User {
-  id        String   @id // Clerk User ID
-  email     String   @unique
-  role      UserRole?
-  plan      PlanType @default(free)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  student   Student?
-  company   Company?
-  notifications Notification[]
-  analyticsEvents AnalyticsEvent[]
-
-  @@map("users")
-}
-
-model Student {
-  id                String   @id // FK to User.id
-  user              User     @relation(fields: [id], references: [id], onDelete: Cascade)
-  name              String
-  slug              String   @unique
-  bio               String?
-  primarySkill      String?  @map("primary_skill")
-  resumeUrl         String?  @map("resume_url")
-  githubUsername    String?  @map("github_username")
-  leetcodeUsername  String?  @map("leetcode_username")
-  codeforcesUsername String? @map("codeforces_username")
-  githubUrl         String?  @map("github_url")
-  leetcodeUrl       String?  @map("leetcode_url")
-  codeforcesUrl     String?  @map("codeforces_url")
-  linkedinUrl       String?  @map("linkedin_url")
-  skillVector       Unsupported("vector(1536)")? @map("skill_vector")
-  createdAt         DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  skills            StudentSkill[]
-  projects          Project[]
-  certifications    Certification[]
-  experience        Experience[]
-  education         Education[]
-  applications      Application[]
-  roadmaps          Roadmap[]
-  mockInterviews    MockInterview[]
-  resumes           ResumeVersion[]
-  originalResumes   Resume[]
-  recommendations   Recommendation[]
-  externalAccounts  ExternalAccount[]
-  normalizedSkills  NormalizedSkill[]
-  scores            UserScore?
-  assessmentResults AssessmentResult[]
-  careerRecommendations CareerRecommendation[]
-
-  @@map("students")
-}
-
-model AssessmentResult {
-  id                String   @id // nanoid
-  studentId         String   @map("student_id")
-  skillName         String   @map("skill_name")
-  score             Int      @default(0) // 0-100
-  totalQuestions    Int      @default(0) @map("total_questions")
-  correctAnswers    Int      @default(0) @map("correct_answers")
-  identifiedGaps    String?  @map("identified_gaps") // JSON array of missing sub-skills
-  createdAt         DateTime @default(now()) @map("created_at")
-
-  student           Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  careerRecommendations CareerRecommendation[]
-
-  @@map("assessment_results")
-}
-
-model CareerRecommendation {
-  id                String   @id // nanoid
-  studentId         String   @map("student_id")
-  assessmentResultId String? @map("assessment_result_id")
-  suggestedRoles    String   @map("suggested_roles") // JSON array of strings
-  gapAnalysis       String   @map("gap_analysis") // JSON array of {skill, gap, recommendation}
-  actionPlan        String   @map("action_plan") // JSON array of {step, priority, resource}
-  createdAt         DateTime @default(now()) @map("created_at")
-
-  student           Student           @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  assessmentResult  AssessmentResult? @relation(fields: [assessmentResultId], references: [id], onDelete: SetNull)
-
-  @@map("career_recommendations")
-}
-
-model ExternalAccount {
-  id          String   @id // nanoid
-  studentId   String   @map("student_id")
-  platform    String   // github, leetcode, codeforces, linkedin
-  username    String
-  accessToken String?  @map("access_token")
-  lastSynced  DateTime? @map("last_synced")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  githubData   GitHubData?
-  leetcodeData LeetCodeData?
-
-  @@unique([studentId, platform])
-  @@map("external_accounts")
-}
-
-model GitHubData {
-  id                String   @id // nanoid
-  externalAccountId String   @unique @map("external_account_id")
-  reposCount        Int      @default(0) @map("repos_count")
-  followers         Int      @default(0)
-  totalStars        Int      @default(0) @map("total_stars")
-  topLanguages      String?  // JSON array
-  commitActivity    String?  @map("commit_activity") // JSON for heatmap
-  lastUpdated       DateTime @default(now()) @map("last_updated")
-
-  externalAccount ExternalAccount @relation(fields: [externalAccountId], references: [id], onDelete: Cascade)
-
-  @@map("github_data")
-}
-
-model LeetCodeData {
-  id                String   @id // nanoid
-  externalAccountId String   @unique @map("external_account_id")
-  ranking           Int      @default(0)
-  totalSolved       Int      @default(0) @map("total_solved")
-  easySolved        Int      @default(0) @map("easy_solved")
-  mediumSolved      Int      @default(0) @map("medium_solved")
-  hardSolved        Int      @default(0) @map("hard_solved")
-  contestRating     Float?   @map("contest_rating")
-  streak            Int      @default(0)
-  lastUpdated       DateTime @default(now()) @map("last_updated")
-
-  externalAccount ExternalAccount @relation(fields: [externalAccountId], references: [id], onDelete: Cascade)
-
-  @@map("leetcode_data")
-}
-
-model NormalizedSkill {
-  id          String   @id // nanoid
-  studentId   String   @map("student_id")
-  name        String
-  category    String   // frontend, backend, dsa, devops, soft_skill
-  score       Int      @default(0) // 0-100
-  confidence  Int      @default(0) // 0-100
-  source      String   // github, leetcode, manual, resume
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-  @@map("normalized_skills")
-}
-
-model UserScore {
-  id                String   @id // nanoid
-  studentId         String   @unique @map("student_id")
-  overallScore      Int      @default(0) @map("overall_score")
-  proficiencyScore  Int      @default(0) @map("proficiency_score")
-  consistencyScore  Int      @default(0) @map("consistency_score")
-  problemSolvingScore Int    @default(0) @map("problem_solving_score")
-  projectQualityScore Int    @default(0) @map("project_quality_score")
-  insights          String?  // JSON array of insight strings
-  lastCalculated    DateTime @default(now()) @map("last_calculated")
-
-  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-  @@map("user_scores")
-}
-
-model Skill {
-  id        String   @id // nanoid
-  name      String   @unique
-  category  String?
-  createdAt DateTime @default(now()) @map("created_at")
-
-  studentSkills StudentSkill[]
-  jobSkills     JobSkill[]
-  roadmapSteps  RoadmapStep[]
-
-  @@map("skills")
-}
-
-model StudentSkill {
-  studentId   String   @map("student_id")
-  skillId     String   @map("skill_id")
-  proficiency String   @default("beginner")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  skill   Skill   @relation(fields: [skillId], references: [id], onDelete: Cascade)
-
-  @@id([studentId, skillId])
-  @@map("student_skills")
-}
-
-model Project {
-  id          String    @id // nanoid
-  studentId   String    @map("student_id")
-  title       String
-  description String?
-  url         String?
-  imageUrl    String?   @map("image_url")
-  startDate   DateTime? @map("start_date")
-  endDate     DateTime? @map("end_date")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-
-  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-  @@map("projects")
-}
-
-model Certification {
-  id            String    @id // nanoid
-  studentId     String    @map("student_id")
-  name          String
-  issuer        String
-  issueDate     DateTime? @map("issue_date")
-  credentialUrl String?   @map("credential_url")
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-
-  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-  @@map("certifications")
-}
-
-model Company {
-  id          String   @id // FK to User.id
-  user        User     @relation(fields: [id], references: [id], onDelete: Cascade)
-  name        String
-  companyName String   @map("company_name")
-  industry    String?
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  jobs           Job[]
-  mockInterviews MockInterview[]
-
-  @@map("companies")
-}
-
-model Job {
-  id          String    @id // nanoid
-  companyId   String    @map("company_id")
-  title       String
-  description String
-  location    String?
-  salaryRange String?   @map("salary_range")
-  jobType     String?   @map("job_type")
-  status      JobStatus @default(draft)
-  jobVector   Unsupported("vector(1536)")? @map("job_vector")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-
-  company        Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  skills         JobSkill[]
-  applications   Application[]
-  mockInterviews MockInterview[]
-
-  @@map("jobs")
-}
-
-model Experience {
-  id          String    @id // nanoid
-  studentId   String    @map("student_id")
-  title       String
-  company     String
-  location    String?
-  description String?
-  startDate   DateTime? @map("start_date")
-  endDate     DateTime? @map("end_date")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-
-  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-  @@map("experience")
-}
-
-model Education {
-  id             String    @id // nanoid
-  studentId      String    @map("student_id")
-  school         String
-  degree         String?
-  field          String?
-  graduationDate DateTime? @map("graduation_date")
-  createdAt      DateTime  @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
-
-  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-  @@map("education")
-}
-
-model Application {
-  id             String   @id // nanoid
-  studentId      String   @map("student_id")
-  jobId          String   @map("job_id")
-  status         String   @default("pending") // pending, interviewing, accepted, rejected
-  matchScore     Int      @default(0) @map("match_score")
-  skillScore     Int      @default(0) @map("skill_score")
-  expScore       Int      @default(0) @map("exp_score")
-  projScore      Int      @default(0) @map("proj_score")
-  potentialScore Int      @default(0) @map("potential_score")
-  analysis       String?
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
-
-  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  job     Job     @relation(fields: [jobId], references: [id], onDelete: Cascade)
-
-  @@map("applications")
-}
-
-model JobSkill {
-  jobId              String   @map("job_id")
-  skillId            String   @map("skill_id")
-  requiredProficiency String   @default("beginner") @map("required_proficiency")
-  createdAt          DateTime @default(now()) @map("created_at")
-  updatedAt          DateTime @updatedAt @map("updated_at")
-
-  job   Job   @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
-
-  @@id([jobId, skillId])
-  @@map("job_skills")
-}
-
-// -------------------------------------------------------------
-// NEW ECHFLUX MODELS
-// -------------------------------------------------------------
-
-model Roadmap {
-  id          String   @id // nanoid
-  studentId   String   @map("student_id")
-  targetRole  String   @map("target_role")
-  description String?
-  progress    Int      @default(0) // Percentage 0-100
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  student Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  steps   RoadmapStep[]
-
-  @@map("roadmaps")
-}
-
-model RoadmapStep {
-  id          String   @id // nanoid
-  roadmapId   String   @map("roadmap_id")
-  title       String
-  description String?
-  notes       String?
-  resources   Json?
-  skillId     String?  @map("skill_id")
-  status      String   @default("pending") // pending, in_progress, completed
-  order       Int
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  roadmap Roadmap @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
-  skill   Skill?  @relation(fields: [skillId], references: [id], onDelete: SetNull)
-
-  @@map("roadmap_steps")
-}
-
-model MockInterview {
-  id          String   @id // nanoid
-  studentId   String   @map("student_id")
-  companyId   String?  @map("company_id")
-  jobId       String?  @map("job_id")
-  role        String
-  score       Int?
-  feedback    String?
-  status      String   @default("scheduled") // scheduled, in_progress, completed, cancelled
-  scheduledAt DateTime? @map("scheduled_at")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  company Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
-  job     Job?     @relation(fields: [jobId], references: [id], onDelete: SetNull)
-  messages InterviewMessage[]
-
-  @@map("mock_interviews")
-}
-
-model InterviewMessage {
-  id          String   @id // nanoid
-  interviewId String   @map("interview_id")
-  role        String   // interviewer, candidate
-  content     String
-  createdAt   DateTime @default(now()) @map("created_at")
-
-  interview   MockInterview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
-
-  @@map("interview_messages")
-}
-
-model Resume {
-  id          String   @id // nanoid
-  studentId   String   @map("student_id")
-  fileUrl     String   @map("file_url")
-  status      String   @default("pending") // pending, processing, completed, failed
-  parsedData  String?  @map("parsed_data") // JSON of extraction
-  error       String?
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-  @@map("resumes")
-}
-
-model ResumeVersion {
-  id          String   @id // nanoid
-  studentId   String   @map("student_id")
-  jobTitle    String   @map("job_title") // Specific job tailored for
-  content     String   // JSON or text representing the ATS tailored resume
-  createdAt   DateTime @default(now()) @map("created_at")
-
-  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-  @@map("resume_versions")
-}
-
-model Recommendation {
-  id          String   @id // nanoid
-  studentId   String   @map("student_id")
-  type        String   // job, skill, learning_path
-  title       String
-  description String?
-  link        String?
-  metadata    String?  // JSON for extra data
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-  @@map("recommendations")
-}
-
-model Notification {
-  id        String   @id // nanoid
-  userId    String   @map("user_id")
-  type      String   // email, push, in_app
-  title     String
-  message   String
-  isRead    Boolean  @default(false) @map("is_read")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("notifications")
-}
-
-model AnalyticsEvent {
-  id          String   @id // nanoid
-  userId      String?  @map("user_id")
-  eventType   String   @map("event_type")
-  payload     String?  // JSON for event details
-  createdAt   DateTime @default(now()) @map("created_at")
-
-  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  @@map("analytics_events")
 }

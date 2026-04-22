@@ -1,18 +1,28 @@
 import { HeroSection } from "@/components/landing/hero-section";
+import { ProblemSection } from "@/components/landing/problem-section";
+import { SolutionSection } from "@/components/landing/solution-section";
+import { HowItWorksSection } from "@/components/landing/how-it-works-section";
 import { FeaturesSection } from "@/components/landing/features-section";
-import { DualSidedSection } from "@/components/landing/dual-sided-section";
+import { DataEdgeSection } from "@/components/landing/data-edge-section";
+import { AudienceTabsSection } from "@/components/landing/audience-tabs-section";
+import { DifferentiationSection } from "@/components/landing/differentiation-section";
+import { ImpactPricingSection } from "@/components/landing/impact-pricing-section";
 import { CTASection } from "@/components/landing/cta-section";
-import { LandingHeader } from "@/components/landing/landing-header";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col w-full overflow-hidden">
-      <LandingHeader />
       <HeroSection />
+      <ProblemSection />
+      <SolutionSection />
+      <HowItWorksSection />
       <FeaturesSection />
-      <DualSidedSection />
+      <DataEdgeSection />
+      <AudienceTabsSection />
+      <DifferentiationSection />
+      <ImpactPricingSection />
       <CTASection />
-      
+
       <footer className="border-t border-border py-12 bg-slate-50 dark:bg-slate-950">
         <div className="container mx-auto px-4 text-center">
           <div className="text-2xl font-bold mb-4">ECHFLUX</div>

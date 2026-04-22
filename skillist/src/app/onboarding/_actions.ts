@@ -7,10 +7,12 @@ export async function completeOnboarding(formData: FormData) {
   const role = formData.get('role') as 'student' | 'company'
   const name = formData.get('name') as string
   const primarySkill = formData.get('primarySkill') as string
+  const currentGrade = formData.get('currentGrade') as string
+  const intent = formData.get('intent') as string
   const companyName = formData.get('companyName') as string
   const industry = formData.get('industry') as string
 
-  console.log(`[ACTION] Onboarding data: role=${role}, name=${name}`);
+  console.log(`[ACTION] Onboarding data: role=${role}, name=${name}, intent=${intent}`);
 
   try {
     const response = await fetchFromBackend('/auth/onboarding', {
@@ -19,6 +21,8 @@ export async function completeOnboarding(formData: FormData) {
         role,
         name,
         primarySkill,
+        currentGrade,
+        intent,
         companyName,
         industry
       })

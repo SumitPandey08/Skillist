@@ -31,7 +31,10 @@ async function refineRoadmap(state: typeof AgentState.State) {
     You are an expert career architect. 
     Refine the following roadmap for a student who wants to become a ${state.targetRole}.
     
-    Current Skills: ${state.currentSkills.join(', ')}
+    Student Context:
+    - Current Level/Grade: ${state.currentGrade || 'Not specified'}
+    - Learning Intent: ${state.intent === 'explore' ? 'Exploring interests' : 'Advancing existing career'}
+    - Current Skills: ${state.currentSkills.join(', ')}
     
     Current Roadmap Description: ${state.refinedRoadmap?.description || 'N/A'}
     Current Steps: ${JSON.stringify(state.refinedRoadmap?.steps || [])}
@@ -40,7 +43,7 @@ async function refineRoadmap(state: typeof AgentState.State) {
     - Enrich the resources with 2-3 specific, high-quality links and 2-3 specific YouTube videos for each step. Ensure URLs are real and high quality.
     - Identify accurate prerequisites for each step to ensure a smooth learning path.
     - Improve the "notes" section to be highly detailed and actionable.
-    - Maintain the existing structure but enrich the content.
+    - Tailor the complexity and resource recommendations to the student's level (${state.currentGrade}).
   `;
 
   const result = await model.invoke([

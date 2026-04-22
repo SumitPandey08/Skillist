@@ -1,76 +1,71 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { AnimatedButton } from "@/components/ui/animated-button";
+import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 export function CTASection() {
   return (
-    <section className="py-32 relative overflow-hidden flex items-center justify-center bg-slate-950 text-white">
-      {/* Background glowing orb */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-50">
-        <div className="w-[40rem] h-[20rem] bg-primary/30 rounded-full blur-[150px]" />
-      </div>
+    <section className="relative py-32 overflow-hidden bg-background">
+      {/* Decorative Blob */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl aspect-square bg-primary/20 rounded-full blur-[120px] pointer-events-none -z-10" />
 
-      <div className="container px-4 md:px-6 relative z-10 text-center space-y-8 mx-auto">
+      <div className="container mx-auto px-4 max-w-4xl text-center relative z-10">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-bold uppercase tracking-widest"
+          className="rounded-[3rem] p-12 md:p-20 bg-gradient-to-b from-background to-muted/30 border shadow-2xl backdrop-blur-xl relative overflow-hidden"
         >
-          <Sparkles className="w-3 h-3 text-primary" />
-          Join the Future of Work
-        </motion.div>
+          {/* Subtle top border gradient */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50" />
 
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-4xl md:text-6xl font-bold tracking-tight max-w-3xl mx-auto leading-tight"
-        >
-          Ready to Redefine the Hiring Lifecycle?
-        </motion.h2>
-        
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="text-xl text-slate-400 max-w-xl mx-auto leading-relaxed"
-        >
-          Whether you're looking for your dream role or your next 10x engineer, ECHFLUX is the platform where potential meets opportunity.
-        </motion.p>
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="pt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
-        >
-          <Link href="/sign-up">
-            <AnimatedButton size="lg" className="w-[220px] bg-primary hover:bg-primary/90 text-white border-none h-14 text-lg">
-              Start Free Today <ArrowRight className="w-5 h-5 ml-2" />
-            </AnimatedButton>
-          </Link>
-          <Link href="/jobs">
-            <AnimatedButton variant="outline" size="lg" className="w-[220px] border-white/20 hover:bg-white/10 text-white h-14 text-lg">
-              Explore Jobs
-            </AnimatedButton>
-          </Link>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex justify-center mb-8"
+          >
+            <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary">
+              <Sparkles className="h-8 w-8" />
+            </div>
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6"
+          >
+            Your Career Deserves <span className="text-primary">Clarity</span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-xl md:text-2xl text-muted-foreground mb-10"
+          >
+            Stop guessing. Start building.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+          >
+            <Link href="/sign-up">
+              <Button size="lg" className="rounded-full h-16 px-10 text-lg shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300">
+                Get Started for Free
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </motion.div>
         </motion.div>
-        
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
-          className="text-sm text-slate-500 pt-4"
-        >
-          No credit card required. AI-powered matching starts instantly.
-        </motion.p>
       </div>
     </section>
   );

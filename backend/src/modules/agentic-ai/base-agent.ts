@@ -10,6 +10,8 @@ export const AgentState = Annotation.Root({
   studentId: Annotation<string>(),
   targetRole: Annotation<string>(),
   currentSkills: Annotation<string[]>(),
+  currentGrade: Annotation<string>(),
+  intent: Annotation<string>(),
   refinedRoadmap: Annotation<any>(),
 });
 
