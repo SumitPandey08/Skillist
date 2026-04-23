@@ -13,6 +13,8 @@ export const getPortfolioBySlug = async (req: Request, res: Response, next: Next
         skills: { include: { skill: true } },
         projects: { orderBy: { startDate: 'desc' } },
         certifications: { orderBy: { issueDate: 'desc' } },
+        experience: { orderBy: { startDate: 'desc' } },
+        education: { orderBy: { graduationDate: 'desc' } },
       }
     });
 

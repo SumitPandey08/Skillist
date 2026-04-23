@@ -1,103 +1,88 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, ShieldCheck } from "lucide-react";
+import { ArrowRight, Sparkles, Target, Rocket } from "lucide-react";
 import Link from "next/link";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-background pt-24 md:pt-32 pb-16 md:pb-24">
-      {/* Background Gradients */}
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-        <div className="absolute top-[-20%] left-[-10%] h-[500px] w-[500px] rounded-full bg-primary/20 blur-[120px]" />
-        <div className="absolute bottom-[-20%] right-[-10%] h-[600px] w-[600px] rounded-full bg-indigo-500/10 blur-[120px]" />
+    <section className="relative pt-32 pb-16 md:pt-48 md:pb-32 overflow-hidden">
+      {/* Background blobs for mobile vibrancy */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-full -z-10 pointer-events-none opacity-50">
+        <div className="absolute top-0 left-0 w-72 h-72 bg-primary/20 rounded-full blur-[100px] animate-pulse" />
+        <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-accent/20 rounded-full blur-[100px]" />
       </div>
 
-      <div className="container relative z-10 mx-auto px-4 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mx-auto flex max-w-fit items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary mb-8"
-        >
-          <Sparkles className="h-4 w-4" />
-          <span>The Future of Hiring is Here</span>
-        </motion.div>
+      <div className="container mx-auto px-6">
+        <div className="flex flex-col items-center text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary border border-primary/10 text-sm font-bold mb-8"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>AI-Powered Career Intelligence</span>
+          </motion.div>
 
-        <motion.h1 
-          className="mx-auto max-w-4xl font-extrabold tracking-tight text-4xl sm:text-5xl md:text-7xl lg:text-[5rem] leading-[1.1] mb-6"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          <span className="block">Stop Guessing Your Career.</span>
-          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary via-indigo-400 to-purple-500">
-            Start Building It.
-          </span>
-        </motion.h1>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-6"
+          >
+            Stop Guessing Your Career.<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-indigo-400 to-accent animate-gradient-x">
+              Start Building It.
+            </span>
+          </motion.h1>
 
-        <motion.p 
-          className="mx-auto max-w-2xl text-lg sm:text-xl text-muted-foreground mb-10 leading-relaxed"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          AI-powered platform that helps you choose the right path, build real skills, and get hired based on proof—not resumes.
-        </motion.p>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="max-w-2xl text-lg md:text-xl text-muted-foreground mb-12"
+          >
+            Skillist uses AI to map your natural strengths to market demand, giving you a verifiable roadmap to your dream role.
+          </motion.p>
 
-        <motion.div 
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
-          <Link href="/sign-up">
-            <Button size="lg" className="h-14 px-8 text-lg rounded-full w-full sm:w-auto shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all">
-              Start Your Career Journey
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
-          <Link href="/skills">
-            <Button size="lg" variant="outline" className="h-14 px-8 text-lg rounded-full w-full sm:w-auto border-primary/20 hover:bg-primary/5 backdrop-blur-sm">
-              Get Your Skill Score
-            </Button>
-          </Link>
-        </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto"
+          >
+            <Link href="/sign-up" className="btn-mobile bg-primary text-primary-foreground text-lg shadow-xl shadow-primary/20">
+              Get Started for Free
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Link>
+            <Link href="/skills" className="btn-mobile bg-muted text-foreground border text-lg">
+              Get Skill Score
+            </Link>
+          </motion.div>
 
-        <motion.div 
-          className="mt-16 flex flex-col items-center justify-center gap-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-        >
-          <p className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-            <ShieldCheck className="h-4 w-4 text-emerald-500" />
-            Used by students preparing for tech careers | Built for real-world hiring
-          </p>
-          <div className="flex -space-x-2 overflow-hidden mt-2">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <img
+          {/* Floating Feature Cards for Mobile Impact */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-20 w-full max-w-4xl">
+            {[
+              { label: "AI Roadmap", icon: <Target className="w-5 h-5" />, color: "bg-blue-500" },
+              { label: "Real Proof", icon: <Rocket className="w-5 h-5" />, color: "bg-purple-500" },
+              { label: "Direct Match", icon: <Sparkles className="w-5 h-5" />, color: "bg-amber-500" },
+            ].map((feature, i) => (
+              <motion.div
                 key={i}
-                className="inline-block h-8 w-8 rounded-full ring-2 ring-background object-cover"
-                src={`https://i.pravatar.cc/100?img=${i + 10}`}
-                alt="Student avatar"
-              />
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + i * 0.1 }}
+                className="mobile-card flex flex-col items-center gap-3 text-center"
+              >
+                <div className={`${feature.color} w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-lg shadow-black/5`}>
+                  {feature.icon}
+                </div>
+                <span className="font-bold text-sm">{feature.label}</span>
+              </motion.div>
             ))}
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted ring-2 ring-background">
-              <span className="text-[10px] font-medium text-muted-foreground">10k+</span>
-            </div>
           </div>
-        </motion.div>
+        </div>
       </div>
-
-      {/* Abstract Graphic Element at Bottom */}
-      <motion.div 
-        className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent"
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ duration: 1, delay: 0.8 }}
-      />
     </section>
   );
 }

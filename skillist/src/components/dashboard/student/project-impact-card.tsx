@@ -11,6 +11,10 @@ interface Project {
   technologies?: string[] // Assuming we might have this or can parse it
 }
 
+interface ProjectImpactCardProps {
+  projects: Project[]
+}
+
 export function ProjectImpactCard({ projects }: ProjectImpactCardProps) {
   const displayProjects = projects.slice(0, 2)
 
