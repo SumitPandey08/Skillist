@@ -5,6 +5,7 @@ import { requireAuth, requireStudent, requireCompany } from '../../core/middlewa
 const router = Router();
 
 router.get('/', jobController.getJobs);
+router.get('/recommended', requireStudent, jobController.getRecommendedJobs);
 router.get('/company', requireCompany, jobController.getCompanyJobs);
 router.get('/:id', jobController.getJobById);
 router.get('/company/:id', requireCompany, jobController.getCompanyJobDetails);

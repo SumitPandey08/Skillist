@@ -1,24 +1,32 @@
 import * as React from 'react'
-import Link from 'next/link'
 import { auth } from '@clerk/nextjs/server'
 import { fetchFromBackend } from '@/lib/api-server'
 import { redirect } from 'next/navigation'
-import { HeroSection } from '@/components/dashboard/student/hero-section'
-import { TopSkills } from '@/components/dashboard/student/top-skills'
-import { RecentProjects } from '@/components/dashboard/student/recent-projects'
-import { RecentApplications } from '@/components/dashboard/student/recent-applications'
+
 import { StudentDashboardLayout } from '@/components/dashboard/student/student-dashboard-layout'
 import { calculateProfileCompleteness } from '@/lib/progress'
-import { ProfileCompleteness } from '@/components/dashboard/profile-completeness'
 import { ResumeUpload } from '@/app/dashboard/student/resume-upload'
-import { CheckCircle2, ArrowRight, Trophy } from 'lucide-react'
 import { fetchGitHubStats } from '@/lib/integrations/github'
 import { fetchLeetCodeStats } from '@/lib/integrations/leetcode'
 import { fetchCodeforcesStats } from '@/lib/integrations/codeforces'
+
 import { PlatformStats } from '@/components/portfolio/platform-stats'
+<<<<<<< HEAD
 import { Badge } from '@/components/ui/badge'
 import { TrackingWidget } from '@/components/dashboard/student/tracking-widget'
 import { CareerPathWidget } from '@/components/dashboard/student/career-path-widget'
+=======
+import { DailyMissionPanel } from '@/components/dashboard/student/daily-mission-panel'
+import { SkillIntelligenceCard } from '@/components/dashboard/student/skill-intelligence-card'
+import { ProjectImpactCard } from '@/components/dashboard/student/project-impact-card'
+import { InterviewReadinessCard } from '@/components/dashboard/student/interview-readiness-card'
+import { SmartApplicationInsights } from '@/components/dashboard/student/smart-application-insights'
+import { CareerReadinessMeter } from '@/components/dashboard/student/career-readiness-meter'
+import { GamifiedTrackingWidget } from '@/components/dashboard/student/gamified-tracking-widget'
+import { CareerPredictionPanel } from '@/components/dashboard/student/career-prediction-panel'
+import { SmartLearningFeed } from '@/components/dashboard/student/smart-learning-feed'
+import { RecommendedJobsCard } from '@/components/dashboard/student/recommended-jobs-card'
+>>>>>>> 72cc33a2cef1ea3fa5777c576f4aa5c7f00f363c
 
 export default async function DashboardPage() {
   const { userId } = await auth()
@@ -59,24 +67,35 @@ export default async function DashboardPage() {
     certsCount: userCerts.length,
   })
 
-  // Fetch external stats in parallel
-  const [githubStats, leetcodeStats, codeforcesStats] = await Promise.all([
+  // Fetch external stats and recommended jobs in parallel
+  const [githubStats, leetcodeStats, codeforcesStats, recommendedJobsData] = await Promise.all([
     student.githubUsername ? fetchGitHubStats(student.githubUsername) : Promise.resolve(null),
     student.leetcodeUsername ? fetchLeetCodeStats(student.leetcodeUsername) : Promise.resolve(null),
     student.codeforcesUsername ? fetchCodeforcesStats(student.codeforcesUsername) : Promise.resolve(null),
+    fetchFromBackend('/jobs/recommended')
   ])
 
   return (
+<<<<<<< HEAD
     <StudentDashboardLayout maxWidth="max-w-[1600px]">
       <div className="flex flex-col gap-10">
         <HeroSection 
+=======
+    <StudentDashboardLayout>
+      <div className="flex flex-col gap-8 max-w-7xl mx-auto">
+
+        {/* TOP: Game Changer AI Hero */}
+        <DailyMissionPanel 
+>>>>>>> 72cc33a2cef1ea3fa5777c576f4aa5c7f00f363c
           studentName={student.name?.split(' ')[0] || 'Explorer'} 
+          intent={student.intent}
           score={score}
-          skillsCount={userSkills.length}
-          certsCount={userCerts.length}
-          slug={student.slug}
+          primarySkill={student.primarySkill}
+          careerRecommendation={student.careerRecommendations?.[0]}
+          roadmap={student.roadmaps?.[0]}
         />
 
+<<<<<<< HEAD
         <CareerPathWidget 
           intent={student.intent || 'explore'} 
           currentGrade={student.currentGrade || '1st Year'}
@@ -89,12 +108,38 @@ export default async function DashboardPage() {
             <div className="grid gap-6 md:grid-cols-2">
               <TopSkills skills={userSkills} />
               <RecentProjects projects={userProjects} />
+=======
+        <div className="grid gap-6 lg:grid-cols-12">
+
+          {/* MAIN COLUMN (Middle & Bottom) */}
+          <div className="lg:col-span-8 space-y-6">
+
+            {/* MIDDLE: Intelligence Grid */}
+            <div className="grid gap-5 md:grid-cols-2">
+              <SkillIntelligenceCard 
+                skills={userSkills} 
+                careerRecommendation={student.careerRecommendations?.[0]} 
+              />
+              <div className="space-y-5 flex flex-col">
+                <div className="flex-1">
+                  <ProjectImpactCard projects={userProjects} />
+                </div>
+                <div className="shrink-0">
+                  <InterviewReadinessCard mockInterviews={student.mockInterviews} />
+                </div>
+              </div>
+>>>>>>> 72cc33a2cef1ea3fa5777c576f4aa5c7f00f363c
             </div>
 
-            {/* Platform Stats */}
+            {/* Platform Stats Integration (if external accounts exist) */}
             {(githubStats || leetcodeStats || codeforcesStats) && (
+<<<<<<< HEAD
               <div className="p-8 rounded-[2rem] bg-background/50 border border-border/40 shadow-xl backdrop-blur-sm relative overflow-hidden group">
                 <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-primary via-indigo-500 to-purple-500 opacity-20" />
+=======
+              <div className="p-6 rounded-3xl bg-background/50 border border-border/30 shadow-sm backdrop-blur-md">
+                <h3 className="text-sm font-black uppercase tracking-widest text-primary mb-4">Real Activity Insights</h3>
+>>>>>>> 72cc33a2cef1ea3fa5777c576f4aa5c7f00f363c
                 <PlatformStats 
                   github={githubStats} 
                   leetcode={leetcodeStats} 
@@ -103,8 +148,10 @@ export default async function DashboardPage() {
               </div>
             )}
 
-            <RecentApplications applications={userApplications} />
+            {/* Recommended Jobs Quick Access */}
+            <RecommendedJobsCard jobs={recommendedJobsData} />
 
+<<<<<<< HEAD
             {/* Bio Card */}
             <div className="p-8 rounded-[2rem] bg-gradient-to-br from-muted/50 to-muted/20 border border-border/40 shadow-inner group">
               <div className="flex items-center justify-between mb-4">
@@ -114,9 +161,17 @@ export default async function DashboardPage() {
               <p className="text-base text-muted-foreground leading-relaxed italic">
                 "{student.bio || "You haven't defined your bio yet. An impactful bio increases your AI matching vector score significantly."}"
               </p>
+=======
+            {/* BOTTOM: Actionable History & Feeds */}
+            <div className="grid gap-5 md:grid-cols-2">
+              <SmartApplicationInsights applications={userApplications} />
+              <SmartLearningFeed careerRecommendation={student.careerRecommendations?.[0]} />
+>>>>>>> 72cc33a2cef1ea3fa5777c576f4aa5c7f00f363c
             </div>
+
           </div>
 
+<<<<<<< HEAD
           {/* Sidebar Column */}
           <div className="lg:col-span-4 space-y-8">
             <div className="p-6 rounded-[2rem] bg-card border border-border/40 shadow-xl hover:shadow-2xl transition-shadow duration-500">
@@ -167,7 +222,20 @@ export default async function DashboardPage() {
                  ))}
               </div>
             </div>
+=======
+          {/* SIDEBAR */}
+          <div className="lg:col-span-4 space-y-6">
+            <CareerReadinessMeter score={score} />
+            <GamifiedTrackingWidget />
+            <CareerPredictionPanel primarySkill={student.primarySkill} />
+
+            <div className="p-5 rounded-3xl bg-muted/20 border border-border/40 backdrop-blur-sm">
+              <h3 className="text-xs font-black uppercase tracking-widest mb-4">Resume Parsing</h3>
+              <ResumeUpload />
+            </div>
+>>>>>>> 72cc33a2cef1ea3fa5777c576f4aa5c7f00f363c
           </div>
+
         </div>
       </div>
     </StudentDashboardLayout>
