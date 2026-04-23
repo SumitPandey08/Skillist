@@ -1,19 +1,16 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
 import { 
-  CheckCircle2, Circle, GraduationCap, MapPin, 
-  Loader2, Trash2, Video, ExternalLink, 
+  CheckCircle2, Loader2, Trash2, Video, ExternalLink, 
   ChevronRight, Sparkles, BookOpen, Target, Plus,
   Clock, Trophy, Lightbulb, Zap, ArrowRight,
-  Search, Filter, Share2, Download, Copy,
-  Brain, Rocket, Code2, Globe, Database, Terminal
+  Search, Filter, Share2, Brain, Rocket, Globe, Database, Terminal, Copy
 } from 'lucide-react'
 import { generateAndSaveRoadmap, updateRoadmapStepStatus, deleteRoadmap } from '@/app/dashboard/student/_actions'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
 import {
   Dialog,
   DialogContent,
@@ -101,7 +98,7 @@ function RoadmapTimeline({
                 transition={{ duration: 0.4, delay: idx * 0.03 }}
                 className="relative flex items-start gap-4 sm:gap-10 group"
               >
-                {/* Interactive Node Connector - Responsive Sizing */}
+                {/* Interactive Node Connector */}
                 <div className="relative z-10 pt-4">
                       <motion.button
                         whileHover={{ scale: 1.1, rotate: 90 }}
@@ -121,15 +118,13 @@ function RoadmapTimeline({
                         )}
                       >
                         {isCompleted ? <CheckCircle2 className="w-5 h-5 sm:w-7 sm:h-7" /> : isInProgress ? <Clock className="w-5 h-5 sm:w-7 sm:h-7" /> : <span className="text-sm sm:text-xl font-black">{idx + 1}</span>}
-                        
-                        {/* Glowing Aura for active step */}
                         {isInProgress && (
                           <div className="absolute inset-0 bg-white/20 animate-ping opacity-40" />
                         )}
                       </motion.button>
                 </div>
 
-                {/* Step Glass Card - Refined padding and rounded corners */}
+                {/* Step Glass Card */}
                 <motion.div
                   whileHover={{ x: 4, scale: 1.005 }}
                   onClick={() => setSelectedStep(step)}
@@ -508,12 +503,11 @@ export function RoadmapView({ initialRoadmaps }: { initialRoadmaps: Roadmap[] })
         </div>
       )}
 
-      {/* Detail Dialog - Responsive Overhaul */}
+      {/* Detail Dialog */}
       <Dialog open={!!selectedStep} onOpenChange={() => setSelectedStep(null)}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto rounded-[1.5rem] sm:rounded-[3rem] p-0 border-none bg-background shadow-2xl overflow-x-hidden scrollbar-hide">
           {selectedStep && (
             <div className="flex flex-col">
-              {/* Responsive Header */}
               <div className={cn(
                   "h-48 sm:h-64 relative overflow-hidden flex items-end p-6 sm:p-12 transition-all duration-700",
                   selectedStep.status === 'completed' ? "bg-emerald-600" : selectedStep.status === 'in_progress' ? "bg-amber-500" : "bg-blue-600"
@@ -541,7 +535,6 @@ export function RoadmapView({ initialRoadmaps }: { initialRoadmaps: Roadmap[] })
                 </div>
               </div>
 
-              {/* Main Content - Improved padding and layout */}
               <div className="p-6 sm:p-10 lg:p-12 grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12">
                 <div className="lg:col-span-7 space-y-12">
                     <section className="space-y-6">
@@ -603,7 +596,6 @@ export function RoadmapView({ initialRoadmaps }: { initialRoadmaps: Roadmap[] })
                     </section>
                 </div>
 
-                {/* Sidebar controls for Dialog */}
                 <div className="lg:col-span-5 space-y-10">
                     <div className="p-8 rounded-[2rem] sm:rounded-[2.5rem] bg-muted/10 border border-border/10 space-y-10">
                         <div className="space-y-6">
@@ -675,12 +667,5 @@ export function RoadmapView({ initialRoadmaps }: { initialRoadmaps: Roadmap[] })
         </DialogContent>
       </Dialog>
     </div>
-
-
-
-
-
-
-
-)
+  )
 }

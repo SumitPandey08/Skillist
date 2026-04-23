@@ -58,7 +58,7 @@ export function ProjectsSection({ initialProjects }: { initialProjects: Project[
               <div className="grid gap-4 py-4">
                 <div className="space-y-2">
                   <Label htmlFor="title">Project Title</Label>
-                  <Input id="title" name="title" placeholder="e.g. ECHFLUX Platform" required />
+                  <Input id="title" name="title" placeholder="e.g. Skillist Platform" required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="description">Description</Label>

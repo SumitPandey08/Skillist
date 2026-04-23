@@ -1,10 +1,26 @@
+"use client"
+
+import React from 'react'
 import { ResumeData } from '@/lib/resume-generator'
 import { ATSTemplate } from './ats-template'
 import { ModernTemplate } from './modern-template'
 import { ExecutiveTemplate } from './executive-template'
 import { CreativeTemplate } from './creative-template'
 import { cn } from '@/lib/utils'
-import { Check } from 'lucide-react'
+import { Check, Loader2 } from 'lucide-react'
+import dynamic from 'next/dynamic'
+
+const PDFViewer = dynamic(
+  () => import('@react-pdf/renderer').then((mod) => mod.PDFViewer),
+  { 
+    ssr: false, 
+    loading: () => (
+      <div className="flex items-center justify-center h-full w-full bg-slate-50 min-h-[600px]">
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
+)
 
 export type TemplateType = 'ats-optimized' | 'modern-tech' | 'executive' | 'creative'
 
@@ -104,6 +120,20 @@ export function ResumePreview({
   data: ResumeData
   template: TemplateType 
 }) {
+  const [isClient, setIsClient] = React.useState(false)
+
+  React.useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  if (!isClient) {
+    return (
+      <div className="flex items-center justify-center h-full w-full bg-slate-50 min-h-[600px]">
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
+
   const TemplateComponent = {
     'ats-optimized': ATSTemplate,
     'modern-tech': ModernTemplate,
@@ -113,8 +143,10 @@ export function ResumePreview({
 
   return (
     <div className="bg-muted p-4 sm:p-8 flex justify-center min-h-[600px] overflow-auto">
-      <div className="w-full max-w-[800px] bg-white shadow-2xl rounded-sm origin-top transition-transform">
-        <TemplateComponent data={data} />
+      <div className="w-full max-w-[800px] bg-white shadow-2xl rounded-sm origin-top transition-transform h-[800px]">
+        <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
+          <TemplateComponent data={data} />
+        </PDFViewer>
       </div>
     </div>
   )

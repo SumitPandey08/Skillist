@@ -12,7 +12,7 @@ export default function CandidateLayout({ children }: { children: ReactNode }) {
           <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-primary" />
           </div>
-          <span className="font-bold text-lg tracking-tight">ECHFLUX <span className="text-muted-foreground text-xs font-normal">Candidate</span></span>
+          <span className="font-bold text-lg tracking-tight">Skillist <span className="text-muted-foreground text-xs font-normal">Candidate</span></span>
         </div>
 
         <nav className="flex-1 px-4 space-y-2">

@@ -1,5 +1,5 @@
 import { auth } from '@clerk/nextjs/server'
-import { db, eq, students, studentSkills, skills, projects, certifications } from '@/db'
+import { fetchFromBackend } from '@/lib/api-server'
 import { redirect } from 'next/navigation'
 import { StudentDashboardLayout } from '@/components/dashboard/student/student-dashboard-layout'
 import { SkillsSection } from '@/components/dashboard/skills-section'
@@ -13,32 +13,27 @@ export default async function PortfolioPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
 
-  const studentProfile = await db.query.students.findFirst({
-    where: eq(students.id, userId),
-  })
+  let studentProfile = null
+  let userSkills = []
+  let userProjects = []
+  let userCerts = []
 
-  const userSkills = await db
-    .select({
-      id: skills.id,
-      name: skills.name,
-      proficiency: studentSkills.proficiency,
-    })
-    .from(studentSkills)
-    .innerJoin(skills, eq(studentSkills.skillId, skills.id))
-    .where(eq(studentSkills.studentId, userId))
-
-  const userProjects = await db.query.projects.findMany({
-    where: eq(projects.studentId, userId),
-    orderBy: (projects: any, { desc }: any) => [desc(projects.startDate)],
-  })
-
-  const userCerts = await db.query.certifications.findMany({
-    where: eq(certifications.studentId, userId),
-    orderBy: (certifications: any, { desc }: any) => [desc(certifications.issueDate)],
-  })
+  try {
+    const data = await fetchFromBackend('/users/student/profile')
+    studentProfile = data.student
+    userSkills = studentProfile.skills.map((ss: any) => ({
+      id: ss.skill.id,
+      name: ss.skill.name,
+      proficiency: ss.proficiency,
+    }))
+    userProjects = studentProfile.projects
+    userCerts = studentProfile.certifications
+  } catch (error) {
+    console.error('Failed to fetch student profile:', error)
+  }
 
   return (
-    <StudentDashboardLayout>
+    <StudentDashboardLayout maxWidth="max-w-[1600px]">
       <div className="space-y-12 pb-20">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-2">

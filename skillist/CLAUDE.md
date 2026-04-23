@@ -1,7 +1,7 @@
 <!-- GSD:project-start source:PROJECT.md -->
 ## Project
 
-**ECHFLUX**
+**Skillist**
 
 A scalable, AI-first, dual-sided platform connecting students and employers through intelligent career development tools and hiring automation. It goes beyond a simple job portal by providing a complete career lifecycle ecosystem, including skill tracking, AI-driven roadmaps, intelligent matching, and agentic automation for both sides of the hiring marketplace.
 

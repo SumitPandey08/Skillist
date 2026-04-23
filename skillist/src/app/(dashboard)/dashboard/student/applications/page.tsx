@@ -1,5 +1,5 @@
 import { auth } from '@clerk/nextjs/server'
-import { db, eq, desc, applications, jobs, companies } from '@/db'
+import { fetchFromBackend } from '@/lib/api-server'
 import { redirect } from 'next/navigation'
 import { StudentDashboardLayout } from '@/components/dashboard/student/student-dashboard-layout'
 import { RecentApplications } from '@/components/dashboard/student/recent-applications'
@@ -10,23 +10,15 @@ export default async function ApplicationsPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
 
-  const userApplications = await db
-    .select({
-      id: applications.id,
-      status: applications.status,
-      matchScore: applications.matchScore,
-      createdAt: applications.createdAt,
-      jobTitle: jobs.title,
-      companyName: companies.companyName,
-    })
-    .from(applications)
-    .innerJoin(jobs, eq(applications.jobId, jobs.id))
-    .innerJoin(companies, eq(jobs.companyId, companies.id))
-    .where(eq(applications.studentId, userId))
-    .orderBy(desc(applications.createdAt))
+  let userApplications = []
+  try {
+    userApplications = await fetchFromBackend('/users/student/applications')
+  } catch (error) {
+    console.error('Failed to fetch applications:', error)
+  }
 
   return (
-    <StudentDashboardLayout>
+    <StudentDashboardLayout maxWidth="max-w-[1600px]">
       <div className="space-y-12">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-2">
@@ -58,3 +50,4 @@ export default async function ApplicationsPage() {
     </StudentDashboardLayout>
   )
 }
+

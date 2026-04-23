@@ -23,11 +23,11 @@ const defaultStudent = {
 }
 
 export const metadata: Metadata = {
-  title: 'AI Resume Maker | ECHFLUX - Generate SEO-Optimized Resumes',
+  title: 'AI Resume Maker | Skillist - Generate SEO-Optimized Resumes',
   description: 'Create professional, ATS-optimized resumes with AI. Tailor your resume for specific job applications and boost your chances of getting hired.',
   keywords: ['resume maker', 'AI resume', 'resume generator', 'ATS resume', 'job resume', 'resume builder'],
   openGraph: {
-    title: 'AI Resume Maker | ECHFLUX',
+    title: 'AI Resume Maker | Skillist',
     description: 'Create professional, ATS-optimized resumes with AI',
     type: 'website',
   },

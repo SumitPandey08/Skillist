@@ -28,7 +28,7 @@ export default function EmployerLayout({ children }: { children: ReactNode }) {
           <div className="w-8 h-8 rounded-lg bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center">
             <Building2 className="w-4 h-4 text-indigo-400" />
           </div>
-          <span className="font-bold text-lg tracking-tight">ECHFLUX <span className="text-muted-foreground text-xs font-normal">Employer</span></span>
+          <span className="font-bold text-lg tracking-tight">Skillist <span className="text-muted-foreground text-xs font-normal">Employer</span></span>
         </div>
 
         <nav className="flex-1 px-4 space-y-2">

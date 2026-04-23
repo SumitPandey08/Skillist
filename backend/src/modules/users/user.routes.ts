@@ -11,8 +11,8 @@ router.get('/portfolio/:slug', userController.getPortfolioBySlug);
 
 // Student routes
 router.get('/student/dashboard', requireStudent, userController.getStudentDashboard);
+router.get('/student/applications', requireStudent, userController.getStudentApplications);
 router.get('/student/profile', requireStudent, userController.getStudentFullProfile);
-router.get('/student/:studentId', requireStudent, userController.getStudentById);
 router.patch('/student/bio', requireStudent, userController.updateBio);
 router.patch('/student/platform-connections', requireStudent, userController.updatePlatformConnections);
 
@@ -49,6 +49,9 @@ router.get('/student/interviews/:interviewId', requireStudent, interviewControll
 router.post('/student/interviews', requireStudent, interviewController.createInterview);
 router.post('/student/interviews/:interviewId/messages', requireStudent, interviewController.addInterviewMessage);
 router.post('/student/interviews/:interviewId/complete', requireStudent, interviewController.completeInterview);
+
+// Parameterized routes (move to bottom of student section)
+router.get('/student/:studentId', requireStudent, userController.getStudentById);
 
 // Company routes
 router.get('/company/dashboard', requireCompany, userController.getCompanyDashboard);

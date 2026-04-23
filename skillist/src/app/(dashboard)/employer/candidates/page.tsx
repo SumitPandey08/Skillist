@@ -2,9 +2,10 @@ import { auth } from '@clerk/nextjs/server'
 import { fetchFromBackend } from '@/lib/api-server'
 import { redirect } from 'next/navigation'
 import { ApplicantTable } from '@/components/jobs/applicant-table'
-import { Sparkles, Users, Search, Filter, ShieldCheck, ArrowLeft } from 'lucide-react'
+import { Sparkles, Users, Search, Filter, ShieldCheck, ArrowLeft, Brain } from 'lucide-react'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
 
 export default async function CandidatesPipelinePage(
   props: { searchParams: Promise<{ jobId?: string }> }

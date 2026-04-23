@@ -9,7 +9,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
-  title: "ECHFLUX | Skills-First Matching",
+  title: "Skillist | Skills-First Matching",
   description: "Intelligent skill-to-need matching engine.",
 };
 

@@ -6,7 +6,7 @@ import { StudentDashboardLayout } from '@/components/dashboard/student/student-d
 import { SkillTest } from '@/components/assessment/skill-test'
 
 export const metadata: Metadata = {
-  title: 'Skill Assessment | ECHFLUX',
+  title: 'Skill Assessment | Skillist',
   description: 'Test your technical skills and identify gaps with AI-driven assessments.',
 }
 

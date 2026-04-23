@@ -6,15 +6,9 @@ export default async function DashboardDispatcher() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
 
-  let data;
-  try {
-    data = await fetchFromBackend('/auth/me')
-  } catch (error) {
-    console.error('Failed to fetch user:', error)
-    redirect('/onboarding')
-  }
-
+  const data = await fetchFromBackend('/auth/me')
   const user = data?.user;
+
   if (!user?.role) redirect('/onboarding')
 
   if (user.role === 'student') {

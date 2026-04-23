@@ -59,6 +59,34 @@ export const getStudentDashboard = async (req: any, res: Response, next: NextFun
   }
 };
 
+export const getStudentApplications = async (req: any, res: Response, next: NextFunction) => {
+  const userId = req.auth.userId;
+  try {
+    const applications = await prisma.application.findMany({
+      where: { studentId: userId },
+      include: {
+        job: {
+          include: { company: true }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    
+    const formatted = applications.map(app => ({
+      id: app.id,
+      status: app.status,
+      matchScore: app.matchScore,
+      createdAt: app.createdAt,
+      jobTitle: app.job.title,
+      companyName: app.job.company.companyName,
+    }));
+
+    res.json(formatted);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getStudentFullProfile = async (req: any, res: Response, next: NextFunction) => {
   const userId = req.auth.userId;
   try {

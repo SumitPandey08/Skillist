@@ -111,13 +111,13 @@ export function DataEdgeSection() {
                       initial={{ opacity: 0 }}
                       whileInView={{ opacity: 1 }}
                       viewport={{ once: true }}
-                      transition={{ delay: 0.8 + Math.random() * 0.5 }}
+                      transition={{ delay: 0.8 + ((i * 7) % 5) * 0.1 }}
                       className={`h-4 w-4 rounded-sm ${
-                        Math.random() > 0.7 
+                        (i * 7 + 3) % 10 > 7
                           ? "bg-emerald-500" 
-                          : Math.random() > 0.4 
+                          : (i * 13 + 5) % 10 > 5
                             ? "bg-emerald-500/60" 
-                            : Math.random() > 0.2 
+                            : (i * 11 + 2) % 10 > 3
                               ? "bg-emerald-500/30" 
                               : "bg-slate-700"
                       }`}

@@ -1,9 +1,10 @@
 import { auth } from '@clerk/nextjs/server'
-import { db, eq, jobs } from '@/db'
 import { notFound, redirect } from 'next/navigation'
 import { ResumeTailor } from '@/components/resume/resume-tailor'
-import { ArrowLeft, Sparkles, Target, Zap, ChevronRight } from 'lucide-react'
+import { ArrowLeft, Sparkles, Target, ShieldCheck, Zap } from 'lucide-react'
 import Link from 'next/link'
+import { fetchFromBackend } from '@/lib/api-server'
+
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
@@ -12,9 +13,13 @@ export default async function TailorPage({ params }: { params: { id: string } })
   if (!userId) redirect('/sign-in')
 
   const { id } = await params
-  const job = await db.query.jobs.findFirst({
-    where: eq(jobs.id, id),
-  })
+  let job;
+  try {
+    job = await fetchFromBackend(`/jobs/${id}`)
+  } catch (error) {
+    console.error('Failed to fetch job:', error)
+    notFound()
+  }
 
   if (!job || job.status !== 'active') notFound()
 
@@ -24,7 +29,7 @@ export default async function TailorPage({ params }: { params: { id: string } })
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="text-xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              ECHFLUX
+              Skillist
             </Link>
             <span className="text-slate-300 dark:text-slate-700">|</span>
             <div className="flex items-center gap-2">

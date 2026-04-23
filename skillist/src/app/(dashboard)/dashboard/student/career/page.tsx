@@ -6,7 +6,7 @@ import { StudentDashboardLayout } from '@/components/dashboard/student/student-d
 import { CareerEngine } from '@/components/career/career-engine'
 
 export const metadata: Metadata = {
-  title: 'Career Engine | ECHFLUX',
+  title: 'Career Engine | Skillist',
   description: 'AI-driven career path recommendations based on your skills and preferences.',
 }
 

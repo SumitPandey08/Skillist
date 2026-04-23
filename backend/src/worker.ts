@@ -3,7 +3,7 @@ import { integrationWorker } from './modules/integrations/integrations.worker';
 import { agentWorker } from './modules/agentic-ai/agent.worker';
 import logger from './core/logger';
 
-logger.info('ECHFLUX Worker Service started');
+logger.info('Skillist Worker Service started');
 
 // Register all workers
 const workers = [

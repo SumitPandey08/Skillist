@@ -36,7 +36,7 @@ export default async function JobDetailPage({ params }: { params: { id: string }
     <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950">
       <header className="border-b bg-white dark:bg-slate-900 sticky top-0 z-10">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold">ECHFLUX</Link>
+          <Link href="/" className="text-xl font-bold">Skillist</Link>
           <Link href="/jobs">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" /> Back to All Jobs
@@ -89,7 +89,7 @@ export default async function JobDetailPage({ params }: { params: { id: string }
                 </div>
                 <ApplyButton jobId={id} existingApplication={existingApplication} />
                 <p className="text-[10px] text-center text-muted-foreground">
-                  By applying, you agree to share your ECHFLUX profile with {job.company.companyName}.
+                  By applying, you agree to share your Skillist profile with {job.company.companyName}.
                 </p>
               </CardContent>
             </Card>
@@ -117,7 +117,7 @@ export default async function JobDetailPage({ params }: { params: { id: string }
 
             <Card className="bg-primary/5 border-primary/10">
               <CardContent className="pt-6">
-                <h3 className="font-bold text-sm mb-2">Why ECHFLUX?</h3>
+                <h3 className="font-bold text-sm mb-2">Why Skillist?</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   We use AI to match your unique skills and projects to the specific needs of this role. 
                   Make sure your profile is 100% complete for the best chance!

@@ -1,5 +1,5 @@
 import { auth } from '@clerk/nextjs/server'
-import { db, eq, desc, mockInterviews } from '@/db'
+import { fetchFromBackend } from '@/lib/api-server'
 import { MockInterview } from '@/components/dashboard/student/mock-interview'
 import { InterviewFeedback } from '@/components/dashboard/student/interview-feedback'
 import { redirect } from 'next/navigation'
@@ -12,35 +12,32 @@ export default async function MockInterviewPage({ searchParams }: { searchParams
 
   if (!interviewId) {
     // If no ID provided, try to find the latest active one
-    const latest = await db.query.mockInterviews.findFirst({
-      where: eq(mockInterviews.studentId, userId),
-      orderBy: [desc(mockInterviews.createdAt)]
-    })
-    
-    if (!latest) {
-        redirect('/candidate')
+    try {
+      const interviews = await fetchFromBackend('/users/student/interviews')
+      if (interviews && interviews.length > 0) {
+        interviewId = interviews[0].id
+      }
+    } catch (err) {
+      console.error('Failed to fetch interviews:', err)
     }
     
-    interviewId = latest.id
+    if (!interviewId) {
+        redirect('/dashboard/student')
+    }
   }
 
-  const interview = await db.query.mockInterviews.findFirst({
-    where: eq(mockInterviews.id, interviewId),
-    with: {
-      messages: {
-        orderBy: (messages: any, { asc }: any) => [asc(messages.createdAt)]
-      }
-    }
-  })
-
-  if (!interview || interview.studentId !== userId) {
-    redirect('/candidate')
+  let interview = null
+  try {
+    interview = await fetchFromBackend(`/users/student/interviews/${interviewId}`)
+  } catch (error) {
+    console.error('Failed to fetch interview details:', error)
+    redirect('/dashboard/student')
   }
 
   if (interview.status === 'completed' && interview.feedback) {
     let evaluation = null
     try {
-        evaluation = JSON.parse(interview.feedback)
+        evaluation = typeof interview.feedback === 'string' ? JSON.parse(interview.feedback) : interview.feedback
     } catch (e) {
         console.error("Failed to parse evaluation", e)
     }

@@ -7,7 +7,7 @@ const logger = winston.createLogger({
     winston.format.timestamp(),
     winston.format.json()
   ),
-  defaultMeta: { service: 'echflux-backend' },
+  defaultMeta: { service: 'skillist-backend' },
   transports: [
     new winston.transports.Console({
       format: winston.format.combine(

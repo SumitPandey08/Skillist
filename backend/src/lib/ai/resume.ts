@@ -83,7 +83,7 @@ const getModel = (config: ModelConfig) => {
       });
     case 'gemini-flash':
       return new ChatGoogleGenerativeAI({
-        model: "gemini-2.0-flash",
+        model: "gemini-1.5-flash",
         temperature,
         maxOutputTokens: maxTokens,
         apiKey: process.env.GEMINI_API_KEY,

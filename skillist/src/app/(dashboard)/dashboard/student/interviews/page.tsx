@@ -1,20 +1,30 @@
 import { auth } from '@clerk/nextjs/server'
-import { db, eq, desc, mockInterviews, students } from '@/db'
+import { fetchFromBackend } from '@/lib/api-server'
 import { redirect } from 'next/navigation'
 import { InterviewsClient } from './interviews-client'
+import { StudentDashboardLayout } from '@/components/dashboard/student/student-dashboard-layout'
 
 export default async function InterviewsPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
 
-  const interviews = await db.query.mockInterviews.findMany({
-    where: eq(mockInterviews.studentId, userId),
-    orderBy: desc(mockInterviews.createdAt),
-  })
+  let interviews = []
+  let student = null
 
-  const student = await db.query.students.findFirst({
-    where: eq(students.id, userId),
-  })
+  try {
+    const [interviewsData, profileData] = await Promise.all([
+      fetchFromBackend('/users/student/interviews'),
+      fetchFromBackend('/users/student/profile')
+    ])
+    interviews = interviewsData
+    student = profileData.student
+  } catch (error) {
+    console.error('Failed to fetch interviews or student data:', error)
+  }
 
-  return <InterviewsClient interviews={interviews} student={student} />
+  return (
+    <StudentDashboardLayout maxWidth="max-w-[1600px]">
+      <InterviewsClient interviews={interviews} student={student} />
+    </StudentDashboardLayout>
+  )
 }

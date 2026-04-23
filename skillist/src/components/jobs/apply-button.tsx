@@ -104,7 +104,7 @@ export function ApplyButton({ jobId, existingApplication }: ApplyButtonProps) {
         ) : (
           <>
             <Sparkles className="h-5 w-5" />
-            Apply with ECHFLUX
+            Apply with Skillist
           </>
         )}
       </Button>

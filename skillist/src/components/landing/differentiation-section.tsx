@@ -20,7 +20,7 @@ export function DifferentiationSection() {
           viewport={{ once: true }}
           className="text-4xl md:text-5xl font-bold tracking-tight mb-16"
         >
-          Why <span className="text-primary">ECHFLUX</span> Wins
+          Why <span className="text-primary">Skillist</span> Wins
         </motion.h2>
 
         <motion.div
@@ -34,7 +34,7 @@ export function DifferentiationSection() {
           <div className="grid grid-cols-3 bg-muted/50 p-6 border-b text-lg md:text-xl font-bold">
             <div className="text-left text-muted-foreground font-medium">Approach</div>
             <div className="text-muted-foreground">Traditional Platforms</div>
-            <div className="text-primary bg-primary/10 rounded-lg py-1">ECHFLUX</div>
+            <div className="text-primary bg-primary/10 rounded-lg py-1">Skillist</div>
           </div>
 
           {/* Body Rows */}

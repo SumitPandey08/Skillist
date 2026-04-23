@@ -6,6 +6,11 @@ if (!process.env.GEMINI_API_KEY) {
   throw new Error('Missing GEMINI_API_KEY');
 }
 
+console.log(`[AI] GEMINI_API_KEY present, length: ${process.env.GEMINI_API_KEY.length}`);
+if (process.env.GEMINI_API_KEY.length < 20) {
+  console.warn('[AI] GEMINI_API_KEY seems suspiciously short');
+}
+
 export const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export function getGeminiModel(model: string = 'gemini-flash-latest') {

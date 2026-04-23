@@ -131,7 +131,7 @@ export default async function PortfolioPage({ params }: { params: { slug: string
         </div>
 
         <footer className="mt-24 pt-8 border-t text-center text-sm text-muted-foreground">
-          <p>Powered by ECHFLUX — The Skills-First Career Ecosystem</p>
+          <p>Powered by Skillist — The Skills-First Career Ecosystem</p>
         </footer>
       </main>
     </div>

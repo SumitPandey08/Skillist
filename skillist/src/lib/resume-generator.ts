@@ -1,6 +1,6 @@
 'use server'
 
-import { fetchFromBackend } from './api'
+import { fetchFromBackend } from './api-server'
 import { revalidatePath } from 'next/cache'
 
 export interface ResumeData {

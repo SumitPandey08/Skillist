@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { StudentDashboardLayout } from '@/components/dashboard/student/student-dashboard-layout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Sparkles, BarChart3, TrendingUp, Zap, Target, AlertCircle, Loader2, ArrowRight, Brain, Clock, Star, ChevronRight, LayoutGrid, Award } from 'lucide-react'
@@ -30,7 +29,7 @@ interface Skill {
 }
 
 interface AnalysisClientProps {
-  scores: ScoreData
+  scores: ScoreData | null
   student: StudentData | null
   skills: Skill[]
 }
@@ -58,7 +57,7 @@ export function AnalysisClient({ scores: initialScores, student, skills: userSki
     }
   }
 
-  const getScoreColor = (score: number | null) => {
+  const getScoreColor = (score: number | null | undefined) => {
     if (!score) return 'bg-gray-400'
     if (score >= 80) return 'bg-emerald-500'
     if (score >= 60) return 'bg-blue-500'
@@ -66,7 +65,7 @@ export function AnalysisClient({ scores: initialScores, student, skills: userSki
     return 'bg-rose-500'
   }
 
-  const getScoreLabel = (score: number | null) => {
+  const getScoreLabel = (score: number | null | undefined) => {
     if (!score) return 'N/A'
     if (score >= 80) return 'Elite Performance'
     if (score >= 60) return 'Market Competitive'
@@ -86,8 +85,7 @@ export function AnalysisClient({ scores: initialScores, student, skills: userSki
   ]
 
   return (
-    <StudentDashboardLayout>
-      <div className="space-y-10 pb-20 max-w-7xl mx-auto px-1 sm:px-0">
+    <div className="space-y-10 pb-20 px-1 sm:px-0">
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
           <div className="space-y-4 max-w-3xl">
@@ -249,7 +247,7 @@ export function AnalysisClient({ scores: initialScores, student, skills: userSki
             {/* Sidebar Insights */}
             <motion.div
                 initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
+                animate={{ opacity: 1, y: 0 }}
                 className="lg:col-span-4 space-y-8"
             >
                 {/* Gap Analysis Feed */}
@@ -360,6 +358,5 @@ export function AnalysisClient({ scores: initialScores, student, skills: userSki
             </motion.div>
         </div>
       </div>
-    </StudentDashboardLayout>
   )
 }

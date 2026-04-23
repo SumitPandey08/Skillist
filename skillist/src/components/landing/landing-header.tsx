@@ -16,7 +16,7 @@
 //     >
 //       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
 //         <div className="flex items-center gap-8">
-//           <Link href="/" className="text-xl font-bold tracking-tight">ECHFLUX</Link>
+//           <Link href="/" className="text-xl font-bold tracking-tight">Skillist</Link>
 //           <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
 //             <Link href="/jobs" className="text-muted-foreground hover:text-foreground transition-colors">Browse Jobs</Link>
 //             <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Features</a>

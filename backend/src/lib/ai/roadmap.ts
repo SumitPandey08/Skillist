@@ -1,5 +1,6 @@
-import { geminiGenerateJson } from './openai';
+import { getStructuredModel } from '../../modules/agentic-ai/base-agent';
 import { z } from 'zod';
+import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 
 const RoadmapStepSchema = z.object({
   title: z.string(),
@@ -52,6 +53,11 @@ export async function generateRoadmap(
     Output must be structured JSON. Ensure the roadmap is world-class, surpassing generic advice.
   `;
 
-  const result = await geminiGenerateJson<RoadmapAIResponse>(prompt, RoadmapSchema, { temperature: 0.7 });
-  return result;
+  const structuredModel = getStructuredModel(RoadmapSchema, 0.7);
+  const result = await structuredModel.invoke([
+    new SystemMessage("You are an expert career architect."),
+    new HumanMessage(prompt)
+  ]);
+  
+  return result as RoadmapAIResponse;
 }

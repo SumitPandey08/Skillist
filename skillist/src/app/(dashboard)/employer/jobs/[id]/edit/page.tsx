@@ -1,12 +1,12 @@
 import { auth } from '@clerk/nextjs/server'
-import { db, eq, and, jobs } from '@/db'
+import { fetchFromBackend } from '@/lib/api-server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ArrowLeft, Edit, Zap } from 'lucide-react'
+import { ArrowLeft, Edit } from 'lucide-react'
 
 export default async function EditJobPage(
   props: { params: Promise<{ id: string }> }
@@ -16,16 +16,17 @@ export default async function EditJobPage(
 
   const { id } = await props.params
 
-  const job = await db.query.jobs.findFirst({
-    where: and(
-        eq(jobs.id, id),
-        eq(jobs.companyId, userId)
-    )
-  })
+  let job = null
+  try {
+    job = await fetchFromBackend(`/jobs/${id}`)
+  } catch (error) {
+    console.error('Failed to fetch job:', error)
+    notFound()
+  }
 
   if (!job) notFound()
 
-  async function updateJob(formData: FormData) {
+  async function updateJobAction(formData: FormData) {
     'use server'
     const { userId } = await auth()
     if (!userId) return
@@ -36,19 +37,21 @@ export default async function EditJobPage(
     const salaryRange = formData.get('salaryRange') as string
     const jobType = formData.get('jobType') as string
 
-    await db.update(jobs).set({
-      title,
-      description,
-      location,
-      salaryRange,
-      jobType,
-      updatedAt: new Date()
-    }).where(
-      and(
-        eq(jobs.id, id),
-        eq(jobs.companyId, userId)
-      )
-    )
+    try {
+      await fetchFromBackend(`/jobs/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          title,
+          description,
+          location,
+          salaryRange,
+          jobType,
+        })
+      })
+    } catch (err) {
+      console.error('Failed to update job:', err)
+      return
+    }
 
     redirect('/employer/jobs')
   }
@@ -71,7 +74,7 @@ export default async function EditJobPage(
         {/* Decorative background glow */}
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
         
-        <form action={updateJob} className="space-y-6 relative z-10">
+        <form action={updateJobAction} className="space-y-6 relative z-10">
           <div className="space-y-2">
             <label className="text-sm font-semibold tracking-wide">Job Title</label>
             <Input 

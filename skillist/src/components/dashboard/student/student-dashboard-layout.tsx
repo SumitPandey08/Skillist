@@ -1,11 +1,13 @@
 import { UserButton } from "@clerk/nextjs";
 import { DashboardNav } from "./dashboard-nav";
+import { cn } from "@/lib/utils";
 
 interface StudentDashboardLayoutProps {
   children: React.ReactNode
+  maxWidth?: string
 }
 
-export function StudentDashboardLayout({ children }: StudentDashboardLayoutProps) {
+export function StudentDashboardLayout({ children, maxWidth = "max-w-7xl" }: StudentDashboardLayoutProps) {
   return (
     <div className="flex min-h-screen bg-background relative overflow-hidden">
       {/* Decorative background elements */}
@@ -31,13 +33,13 @@ export function StudentDashboardLayout({ children }: StudentDashboardLayoutProps
         {/* Top Header */}
         <header className="h-20 border-b border-border/40 flex items-center justify-between px-8 lg:px-12 bg-background/50 backdrop-blur-md sticky top-0 z-30 lg:hidden">
            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-primary to-indigo-500 flex items-center justify-center font-black text-white text-xs">E</div>
-              <h1 className="font-black text-lg tracking-tight">ECHFLUX</h1>
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-primary to-indigo-500 flex items-center justify-center font-black text-white text-xs">S</div>
+              <h1 className="font-black text-lg tracking-tight">Skillist</h1>
            </div>
            <UserButton appearance={{ elements: { avatarBox: "w-9 h-9 border-2 border-primary/20" } }} />
         </header>
 
-        <div className="flex-1 p-8 md:p-12 lg:p-16 max-w-7xl mx-auto w-full">
+        <div className={cn("flex-1 p-8 md:p-12 lg:p-16 mx-auto w-full", maxWidth)}>
           {children}
         </div>
       </main>
