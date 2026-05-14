@@ -1,25 +1,25 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 export function CTASection() {
   return (
-    <section className="relative py-32 overflow-hidden bg-background">
-      {/* Decorative Blob */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl aspect-square bg-primary/20 rounded-full blur-[120px] pointer-events-none -z-10" />
+    <section className="relative py-20 md:py-32 overflow-hidden px-6">
+      {/* Immersive background for mobile */}
+      <div className="absolute inset-0 bg-primary/5 -z-10" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/20 rounded-full blur-[120px] -z-10 pointer-events-none opacity-50" />
 
-      <div className="container mx-auto px-4 max-w-4xl text-center relative z-10">
+      <div className="container mx-auto max-w-5xl">
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="rounded-[3rem] p-12 md:p-20 bg-gradient-to-b from-background to-muted/30 border shadow-2xl backdrop-blur-xl relative overflow-hidden"
+          className="glass-panel rounded-[3rem] p-8 md:p-20 text-center relative overflow-hidden shadow-2xl"
         >
-          {/* Subtle top border gradient */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50" />
+          {/* Accent decoration */}
+          <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-transparent via-primary to-transparent" />
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -27,7 +27,7 @@ export function CTASection() {
             viewport={{ once: true }}
             className="flex justify-center mb-8"
           >
-            <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary">
+            <div className="flex items-center justify-center h-16 w-16 rounded-2xl bg-primary/10 text-primary shadow-inner">
               <Sparkles className="h-8 w-8" />
             </div>
           </motion.div>
@@ -36,8 +36,7 @@ export function CTASection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6"
+            className="mb-6"
           >
             Your Career Deserves <span className="text-primary">Clarity</span>
           </motion.h2>
@@ -46,24 +45,24 @@ export function CTASection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-xl md:text-2xl text-muted-foreground mb-10"
+            className="text-lg md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto font-bold uppercase tracking-tight"
           >
-            Stop guessing. Start building.
+            Stop guessing. Start building. Join thousands of students engineering their future.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
+            className="flex flex-col items-center gap-4"
           >
-            <Link href="/sign-up">
-              <Button size="lg" className="rounded-full h-16 px-10 text-lg shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300">
-                Get Started for Free
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+            <Link href="/sign-up" className="btn-mobile bg-primary text-primary-foreground text-lg w-full sm:w-auto px-10 shadow-xl shadow-primary/20">
+              Get Started for Free
+              <ArrowRight className="ml-2 w-5 h-5" />
             </Link>
+            <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mt-2">
+              No credit card required • Join in 60 seconds
+            </p>
           </motion.div>
         </motion.div>
       </div>

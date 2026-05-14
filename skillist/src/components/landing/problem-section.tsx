@@ -2,43 +2,54 @@
 
 import { motion } from "framer-motion";
 import { AlertTriangle, Clock, Target, FileX } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const problems = [
   {
-    icon: <Target className="h-6 w-6 text-orange-500" />,
+    icon: <Target className="h-6 w-6" />,
     stat: "~42%",
     text: "of graduates are truly job-ready, leaving a massive skills gap.",
+    color: "text-orange-500",
+    bg: "bg-orange-500/10"
   },
   {
-    icon: <AlertTriangle className="h-6 w-6 text-red-500" />,
+    icon: <AlertTriangle className="h-6 w-6" />,
     stat: "80%+",
     text: "of employers struggle to find the right talent for modern roles.",
+    color: "text-red-500",
+    bg: "bg-red-500/10"
   },
   {
-    icon: <Clock className="h-6 w-6 text-amber-500" />,
+    icon: <Clock className="h-6 w-6" />,
     stat: "Random",
     text: "learning paths leave students without clear career direction.",
+    color: "text-amber-500",
+    bg: "bg-amber-500/10"
   },
   {
-    icon: <FileX className="h-6 w-6 text-rose-500" />,
+    icon: <FileX className="h-6 w-6" />,
     stat: "Resumes",
     text: "fail to reflect real, practical, and verifiable skills.",
+    color: "text-rose-500",
+    bg: "bg-rose-500/10"
   },
 ];
 
 export function ProblemSection() {
   return (
-    <section className="relative py-24 bg-slate-50 dark:bg-slate-950/50 overflow-hidden">
-      {/* Decorative Blur */}
-      <div className="absolute left-1/2 top-1/2 -z-10 h-[600px] w-[800px] -translate-x-1/2 -translate-y-1/2 opacity-20 dark:opacity-10 blur-[100px] bg-gradient-to-r from-red-500 to-orange-500 rounded-full mix-blend-multiply flex-none" />
+    <section className="relative py-20 md:py-32 overflow-hidden">
+      {/* Dynamic background element for mobile impact */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full -z-10 opacity-30 pointer-events-none">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-destructive/10 rounded-full blur-[120px]" />
+      </div>
 
-      <div className="container mx-auto px-4 max-w-6xl">
-        <div className="text-center mb-16">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16 md:mb-24">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 rounded-full border border-destructive/20 bg-destructive/5 px-3 py-1 text-sm font-medium text-destructive mb-6"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-destructive/10 text-destructive border border-destructive/10 text-xs font-black uppercase tracking-widest mb-6"
           >
             <AlertTriangle className="h-4 w-4" />
             <span>The Reality Check</span>
@@ -48,8 +59,7 @@ export function ProblemSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl md:text-5xl font-bold tracking-tight mb-6"
+            className="mb-6 max-w-3xl mx-auto"
           >
             The Traditional System is <span className="text-destructive">Broken</span>
           </motion.h2>
@@ -58,43 +68,49 @@ export function ProblemSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-lg text-muted-foreground mx-auto max-w-2xl"
+            className="max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground"
           >
-            A massive disconnect exists between education and employment. It&apos;s costing everyone.
+            A massive disconnect exists between education and employment. It&apos;s costing everyone time, talent, and opportunity.
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-16">
           {problems.map((item, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.1 * index + 0.3 }}
-              className="relative group rounded-2xl border border-border bg-background p-6 shadow-sm hover:shadow-md hover:border-destructive/30 transition-all duration-300"
+              transition={{ delay: index * 0.1 }}
+              className="mobile-card flex flex-col items-start gap-4 group"
             >
-              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-muted group-hover:bg-destructive/10 transition-colors">
+              <div className={cn("p-3 rounded-2xl transition-transform group-hover:scale-110", item.bg, item.color)}>
                 {item.icon}
               </div>
-              <h3 className="text-3xl font-bold mb-2 tracking-tight">{item.stat}</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">{item.text}</p>
+              <div>
+                <h3 className="text-3xl font-black tracking-tighter mb-1">{item.stat}</h3>
+                <p className="text-sm font-bold text-muted-foreground leading-relaxed uppercase tracking-tight">{item.text}</p>
+              </div>
             </motion.div>
           ))}
         </div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.8 }}
-          className="mx-auto max-w-3xl rounded-2xl bg-gradient-to-br from-destructive/10 via-background to-background p-[1px]"
+          className="max-w-4xl mx-auto"
         >
-          <div className="rounded-2xl bg-background/80 backdrop-blur-xl px-6 py-8 text-center border shadow-sm">
-            <h4 className="text-xl md:text-2xl font-semibold mb-2">
-              Result: <span className="text-destructive">Time wasted. Talent wasted. Opportunities missed.</span>
-            </h4>
+          <div className="glass-panel rounded-[2rem] p-8 md:p-12 text-center shadow-xl">
+             <div className="w-16 h-16 bg-destructive/10 text-destructive rounded-full flex items-center justify-center mx-auto mb-6">
+                <FileX className="w-8 h-8" />
+             </div>
+             <h4 className="text-2xl md:text-3xl font-black tracking-tight mb-4">
+               Result: <span className="text-destructive">Wasted Talent.</span>
+             </h4>
+             <p className="text-muted-foreground font-bold uppercase tracking-widest text-sm max-w-md mx-auto">
+               Degrees and resumes are no longer enough to prove you can do the job.
+             </p>
           </div>
         </motion.div>
       </div>

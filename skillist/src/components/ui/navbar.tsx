@@ -31,9 +31,11 @@ export function Navbar() {
 
   const navLinks = [
     { name: "Jobs", href: "/jobs", icon: <Briefcase className="w-5 h-5" /> },
-    { name: "Portfolio", href: "/portfolio", icon: <User className="w-5 h-5" /> },
-    { name: "Skills", href: "/skills", icon: <Sparkles className="w-5 h-5" /> },
   ];
+
+  if (isSignedIn) {
+    navLinks.push({ name: "Dashboard", href: "/dashboard", icon: <Rocket className="w-5 h-5" /> });
+  }
 
   return (
     <>

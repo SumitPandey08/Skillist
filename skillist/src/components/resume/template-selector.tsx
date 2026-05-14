@@ -10,18 +10,6 @@ import { cn } from '@/lib/utils'
 import { Check, Loader2 } from 'lucide-react'
 import dynamic from 'next/dynamic'
 
-const PDFViewer = dynamic(
-  () => import('@react-pdf/renderer').then((mod) => mod.PDFViewer),
-  { 
-    ssr: false, 
-    loading: () => (
-      <div className="flex items-center justify-center h-full w-full bg-slate-50 min-h-[600px]">
-        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
-      </div>
-    )
-  }
-)
-
 export type TemplateType = 'ats-optimized' | 'modern-tech' | 'executive' | 'creative'
 
 interface TemplateSelectorProps {
@@ -79,7 +67,6 @@ export function TemplateSelector({ selectedTemplate, onTemplateChange }: Templat
               : "border-border hover:border-primary/40 bg-card"
           )}
         >
-          {/* Visual Preview Representation */}
           <div className={cn("h-24 w-full p-3 flex flex-col gap-2 opacity-80 group-hover:opacity-100 transition-opacity", template.previewColor)}>
             <div className={cn("h-2 w-1/2 rounded-full", template.id === 'ats-optimized' ? 'bg-slate-300' : template.id === 'modern-tech' ? 'bg-indigo-300' : template.id === 'executive' ? 'bg-amber-300' : 'bg-pink-300')} />
             <div className="flex gap-2">
@@ -113,41 +100,110 @@ export function TemplateSelector({ selectedTemplate, onTemplateChange }: Templat
   )
 }
 
-export function ResumePreview({ 
+// Low-level renderer components
+const PDFViewer = dynamic(
+  () => import('@react-pdf/renderer').then((mod) => mod.PDFViewer),
+  { ssr: false }
+)
+
+function ResumePreviewInternal({ 
   data, 
   template 
 }: { 
   data: ResumeData
   template: TemplateType 
 }) {
-  const [isClient, setIsClient] = React.useState(false)
+  // Sanitize data for react-pdf
+  const sanitizedData = React.useMemo(() => {
+    if (!data) return null;
+    
+    try {
+      const clone: any = {
+        personalInfo: {
+          name: String(data.personalInfo?.name || ''),
+          email: String(data.personalInfo?.email || ''),
+          phone: String(data.personalInfo?.phone || ''),
+          location: String(data.personalInfo?.location || ''),
+          linkedIn: String(data.personalInfo?.linkedIn || ''),
+          github: String(data.personalInfo?.github || ''),
+          portfolio: String(data.personalInfo?.portfolio || ''),
+        },
+        professionalSummary: String(data.professionalSummary || ''),
+        skills: Array.isArray(data.skills) ? data.skills.map(s => ({
+          name: String(s.name || ''),
+          proficiency: String(s.proficiency || ''),
+          category: String(s.category || 'General')
+        })) : [],
+        experience: Array.isArray(data.experience) ? data.experience.map(exp => ({
+          title: String(exp.title || ''),
+          company: String(exp.company || ''),
+          description: String(exp.description || ''),
+          startDate: String(exp.startDate || ''),
+          endDate: String(exp.endDate || ''),
+          isCurrentRole: !!exp.isCurrentRole,
+          achievements: Array.isArray(exp.achievements) ? exp.achievements.map(String) : []
+        })) : [],
+        projects: Array.isArray(data.projects) ? data.projects.map(p => ({
+          title: String(p.title || ''),
+          description: String(p.description || ''),
+          technologies: Array.isArray(p.technologies) ? p.technologies.map(String) : [],
+          url: String(p.url || '')
+        })) : [],
+        education: Array.isArray(data.education) ? data.education.map(edu => ({
+          school: String(edu.school || ''),
+          degree: String(edu.degree || ''),
+          field: String(edu.field || ''),
+          graduationDate: String(edu.graduationDate || '')
+        })) : [],
+        targetRole: String((data as any).targetRole || 'Professional')
+      };
 
-  React.useEffect(() => {
-    setIsClient(true)
-  }, [])
+      return clone;
+    } catch (e) {
+      console.error("Sanitization error:", e);
+      return null;
+    }
+  }, [data]);
 
-  if (!isClient) {
-    return (
-      <div className="flex items-center justify-center h-full w-full bg-slate-50 min-h-[600px]">
-        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
-      </div>
-    )
-  }
-
-  const TemplateComponent = {
+  const TemplateMap: Record<string, any> = {
     'ats-optimized': ATSTemplate,
     'modern-tech': ModernTemplate,
     'executive': ExecutiveTemplate,
     'creative': CreativeTemplate,
-  }[template]
+  }
+
+  const TemplateComponent = TemplateMap[template]
+
+  // Safety check for data and template
+  if (!sanitizedData || !sanitizedData.personalInfo || !TemplateComponent) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full w-full bg-slate-50 min-h-[600px] p-6 text-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
+        <p className="text-muted-foreground font-medium">Preparing your live preview...</p>
+      </div>
+    )
+  }
 
   return (
-    <div className="bg-muted p-4 sm:p-8 flex justify-center min-h-[600px] overflow-auto">
-      <div className="w-full max-w-[800px] bg-white shadow-2xl rounded-sm origin-top transition-transform h-[800px]">
-        <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
-          <TemplateComponent data={data} />
+    <div className="bg-muted p-2 sm:p-4 flex flex-col justify-center min-h-[600px] h-full overflow-hidden">
+      <div className="w-full h-full bg-white shadow-2xl rounded-sm overflow-hidden relative border-none">
+        <PDFViewer width="100%" height="800px" style={{ border: 'none' }} showToolbar={false}>
+          <TemplateComponent data={sanitizedData} />
         </PDFViewer>
       </div>
     </div>
   )
 }
+
+// Export the preview component wrapped in dynamic with no SSR
+export const ResumePreview = dynamic(
+  () => Promise.resolve(ResumePreviewInternal),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center h-full w-full bg-slate-50 min-h-[600px]">
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
+)

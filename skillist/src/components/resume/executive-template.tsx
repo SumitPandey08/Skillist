@@ -12,7 +12,9 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: 30,
-    borderBottom: '3px solid #d97706',
+    borderBottomWidth: 3,
+    borderBottomColor: '#d97706',
+    borderBottomStyle: 'solid',
     paddingBottom: 20,
   },
   nameRow: {
@@ -29,7 +31,7 @@ const styles = StyleSheet.create({
   titleLine: {
     fontSize: 11,
     color: '#d97706',
-    fontWeight: 'medium',
+    fontWeight: 'bold',
     textTransform: 'uppercase',
     letterSpacing: 2,
     marginBottom: 12,
@@ -39,13 +41,17 @@ const styles = StyleSheet.create({
     color: '#6b7280',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+  },
+  contactItem: {
+    marginRight: 8,
+    marginBottom: 4,
   },
   divider: {
     width: '100%',
     height: 1,
     backgroundColor: '#e5e7eb',
-    marginVertical: 15,
+    marginTop: 15,
+    marginBottom: 15,
   },
   sectionTitle: {
     fontSize: 12,
@@ -55,7 +61,9 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     marginTop: 18,
     marginBottom: 10,
-    borderBottom: '1px solid #e5e7eb',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+    borderBottomStyle: 'solid',
     paddingBottom: 5,
   },
   item: {
@@ -89,12 +97,15 @@ const styles = StyleSheet.create({
   skillChip: {
     backgroundColor: '#fef3c7',
     color: '#92400e',
-    padding: '3 8',
-    borderRadius: 3,
-    fontSize: 8,
+    paddingTop: 3,
+    paddingBottom: 3,
+    paddingLeft: 8,
+    paddingRight: 8,
     marginRight: 6,
     marginBottom: 6,
-    fontWeight: 'medium',
+    fontWeight: 'bold',
+    borderRadius: 3,
+    fontSize: 8,
   },
   projectTitle: {
     fontSize: 11,
@@ -109,103 +120,115 @@ const styles = StyleSheet.create({
   },
 });
 
-export const ExecutiveTemplate = ({ data }: { data: any }) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.nameRow}>
-          <Text style={styles.name}>{data.personalInfo?.name || data.name}</Text>
-        </View>
-        <Text style={styles.titleLine}>Executive Profile</Text>
-        <View style={styles.contact}>
-          {data.personalInfo?.email && <Text>📧 {data.personalInfo.email}</Text>}
-          {data.personalInfo?.phone && <Text>📱 {data.personalInfo.phone}</Text>}
-          {data.personalInfo?.location && <Text>📍 {data.personalInfo.location}</Text>}
-          {data.personalInfo?.linkedIn && <Text>💼 LinkedIn</Text>}
-        </View>
-      </View>
+export const ExecutiveTemplate = ({ data }: { data: any }) => {
+  if (!data || !data.personalInfo) {
+    return (
+      <Document>
+        <Page size="A4" style={styles.page}>
+          <Text>Loading resume data...</Text>
+        </Page>
+      </Document>
+    );
+  }
 
-      {/* Professional Summary */}
-      {data.professionalSummary && (
-        <View>
-          <Text style={styles.sectionTitle}>Executive Summary</Text>
-          <Text style={styles.description}>{data.professionalSummary}</Text>
-        </View>
-      )}
-
-      {/* Experience */}
-      {data.experience?.length > 0 && (
-        <View>
-          <Text style={styles.sectionTitle}>Professional Experience</Text>
-          {data.experience.map((exp: any, idx: number) => (
-            <View key={idx} style={styles.item}>
-              <View style={styles.itemHeader}>
-                <View>
-                  <Text style={styles.itemTitle}>{exp.title}</Text>
-                  <Text style={styles.itemSubtitle}>{exp.company}</Text>
-                </View>
-                <Text style={styles.itemDate}>
-                  {exp.startDate} — {exp.isCurrentRole ? 'Present' : exp.endDate}
-                </Text>
-              </View>
-              <Text style={styles.description}>{exp.description}</Text>
-            </View>
-          ))}
-        </View>
-      )}
-
-      {/* Projects */}
-      {data.projects?.length > 0 && (
-        <View>
-          <Text style={styles.sectionTitle}>Key Projects & Initiatives</Text>
-          {data.projects.map((proj: any, idx: number) => (
-            <View key={idx} style={styles.item}>
-              <Text style={styles.projectTitle}>{proj.title}</Text>
-              <Text style={styles.description}>{proj.description}</Text>
-              {proj.technologies?.length > 0 && (
-                <Text style={styles.projectTech}>
-                  Technologies: {proj.technologies.join(', ')}
-                </Text>
-              )}
-            </View>
-          ))}
-        </View>
-      )}
-
-      {/* Skills */}
-      {data.skills?.length > 0 && (
-        <View>
-          <Text style={styles.sectionTitle}>Core Competencies</Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-            {data.skills.map((skill: any, idx: number) => (
-              <Text key={idx} style={styles.skillChip}>
-                {skill.name}
-              </Text>
-            ))}
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.nameRow}>
+            <Text style={styles.name}>{data.personalInfo.name || 'Professional Resume'}</Text>
+          </View>
+          <Text style={styles.titleLine}>Executive Profile</Text>
+          <View style={styles.contact}>
+            {data.personalInfo.email ? <View style={styles.contactItem}><Text>📧 {data.personalInfo.email}</Text></View> : null}
+            {data.personalInfo.phone ? <View style={styles.contactItem}><Text>📱 {data.personalInfo.phone}</Text></View> : null}
+            {data.personalInfo.location ? <View style={styles.contactItem}><Text>📍 {data.personalInfo.location}</Text></View> : null}
+            {data.personalInfo.linkedIn ? <View style={styles.contactItem}><Text>💼 LinkedIn</Text></View> : null}
           </View>
         </View>
-      )}
 
-      {/* Education */}
-      {data.education?.length > 0 && (
-        <View>
-          <Text style={styles.sectionTitle}>Education</Text>
-          {data.education.map((edu: any, idx: number) => (
-            <View key={idx} style={styles.item}>
-              <View style={styles.itemHeader}>
-                <View>
-                  <Text style={styles.itemTitle}>{edu.school}</Text>
-                  <Text style={styles.itemSubtitle}>
-                    {edu.degree} {edu.field ? `— ${edu.field}` : ''}
+        {/* Professional Summary */}
+        {data.professionalSummary ? (
+          <View>
+            <Text style={styles.sectionTitle}>Executive Summary</Text>
+            <Text style={styles.description}>{data.professionalSummary}</Text>
+          </View>
+        ) : null}
+
+        {/* Experience */}
+        {data.experience && data.experience.length > 0 ? (
+          <View>
+            <Text style={styles.sectionTitle}>Professional Experience</Text>
+            {data.experience.map((exp: any, idx: number) => (
+              <View key={idx} style={styles.item}>
+                <View style={styles.itemHeader}>
+                  <View>
+                    <Text style={styles.itemTitle}>{exp.title}</Text>
+                    <Text style={styles.itemSubtitle}>{exp.company}</Text>
+                  </View>
+                  <Text style={styles.itemDate}>
+                    {exp.startDate} — {exp.isCurrentRole ? 'Present' : exp.endDate}
                   </Text>
                 </View>
-                {edu.graduationDate && <Text style={styles.itemDate}>{edu.graduationDate}</Text>}
+                <Text style={styles.description}>{exp.description}</Text>
               </View>
+            ))}
+          </View>
+        ) : null}
+
+        {/* Projects */}
+        {data.projects && data.projects.length > 0 ? (
+          <View>
+            <Text style={styles.sectionTitle}>Key Projects & Initiatives</Text>
+            {data.projects.map((proj: any, idx: number) => (
+              <View key={idx} style={styles.item}>
+                <Text style={styles.projectTitle}>{proj.title}</Text>
+                <Text style={styles.description}>{proj.description}</Text>
+                {proj.technologies && proj.technologies.length > 0 ? (
+                  <Text style={styles.projectTech}>
+                    Technologies: {proj.technologies.join(', ')}
+                  </Text>
+                ) : null}
+              </View>
+            ))}
+          </View>
+        ) : null}
+
+        {/* Skills */}
+        {data.skills && data.skills.length > 0 ? (
+          <View>
+            <Text style={styles.sectionTitle}>Core Competencies</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+              {data.skills.map((skill: any, idx: number) => (
+                <Text key={idx} style={styles.skillChip}>
+                  {skill.name}
+                </Text>
+              ))}
             </View>
-          ))}
-        </View>
-      )}
-    </Page>
-  </Document>
-)
+          </View>
+        ) : null}
+
+        {/* Education */}
+        {data.education && data.education.length > 0 ? (
+          <View>
+            <Text style={styles.sectionTitle}>Education</Text>
+            {data.education.map((edu: any, idx: number) => (
+              <View key={idx} style={styles.item}>
+                <View style={styles.itemHeader}>
+                  <View>
+                    <Text style={styles.itemTitle}>{edu.school}</Text>
+                    <Text style={styles.itemSubtitle}>
+                      {edu.degree} {edu.field ? `— ${edu.field}` : ''}
+                    </Text>
+                  </View>
+                  {edu.graduationDate ? <Text style={styles.itemDate}>{edu.graduationDate}</Text> : null}
+                </View>
+              </View>
+            ))}
+          </View>
+        ) : null}
+      </Page>
+    </Document>
+  )
+}

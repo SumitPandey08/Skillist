@@ -76,17 +76,19 @@ const getModel = (config: ModelConfig) => {
   switch (provider) {
     case 'gemini-pro':
       return new ChatGoogleGenerativeAI({
-        model: "gemini-2.5-pro-preview-05-06",
+        model: "gemini-pro-latest",
         temperature,
         maxOutputTokens: maxTokens,
         apiKey: process.env.GEMINI_API_KEY,
+        apiVersion: "v1beta",
       });
     case 'gemini-flash':
       return new ChatGoogleGenerativeAI({
-        model: "gemini-1.5-flash",
+        model: "gemini-flash-latest",
         temperature,
         maxOutputTokens: maxTokens,
         apiKey: process.env.GEMINI_API_KEY,
+        apiVersion: "v1beta",
       });
     case 'gpt-4':
       return new ChatOpenAI({
@@ -104,10 +106,11 @@ const getModel = (config: ModelConfig) => {
       });
     default:
       return new ChatGoogleGenerativeAI({
-        model: "gemini-2.0-flash",
+        model: "gemini-flash-latest",
         temperature,
         maxOutputTokens: maxTokens,
         apiKey: process.env.GEMINI_API_KEY,
+        apiVersion: "v1beta",
       });
   }
 };

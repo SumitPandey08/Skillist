@@ -9,10 +9,15 @@ const styles = StyleSheet.create({
     lineHeight: 1.5,
   },
   header: {
-    borderBottom: '4px dashed #ec4899',
+    borderBottomWidth: 4,
+    borderBottomColor: '#ec4899',
+    borderBottomStyle: 'dashed',
     paddingBottom: 20,
     backgroundColor: '#fdf2f8',
-    padding: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
     marginLeft: -40,
     marginRight: -40,
     marginTop: -40,
@@ -40,12 +45,16 @@ const styles = StyleSheet.create({
     color: '#6b7280',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+  },
+  contactItem: {
+    marginRight: 10,
+    marginBottom: 4,
   },
   accentBar: {
     height: 6,
     backgroundColor: '#ec4899',
-    marginVertical: 15,
+    marginTop: 15,
+    marginBottom: 15,
     borderRadius: 3,
   },
   sectionTitle: {
@@ -60,7 +69,9 @@ const styles = StyleSheet.create({
   item: {
     marginBottom: 12,
     paddingLeft: 15,
-    borderLeft: '2px solid #fbcfe8',
+    borderLeftWidth: 2,
+    borderLeftColor: '#fbcfe8',
+    borderLeftStyle: 'solid',
   },
   itemHeader: {
     flexDirection: 'row',
@@ -89,19 +100,27 @@ const styles = StyleSheet.create({
   skillBadge: {
     backgroundColor: '#fce7f3',
     color: '#9d174d',
-    padding: '3 10',
-    borderRadius: 20,
-    fontSize: 8,
-    fontWeight: 'medium',
+    paddingTop: 3,
+    paddingBottom: 3,
+    paddingLeft: 10,
+    paddingRight: 10,
     marginRight: 6,
     marginBottom: 6,
+    borderRadius: 20,
+    fontSize: 8,
+    fontWeight: 'bold',
   },
   projectCard: {
     backgroundColor: '#fdf2f8',
-    padding: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
     borderRadius: 6,
     marginBottom: 10,
-    borderLeft: '3px solid #ec4899',
+    borderLeftWidth: 3,
+    borderLeftColor: '#ec4899',
+    borderLeftStyle: 'solid',
   },
   projectTitle: {
     fontSize: 11,
@@ -116,105 +135,117 @@ const styles = StyleSheet.create({
   },
 });
 
-export const CreativeTemplate = ({ data }: { data: any }) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.nameRow}>
+export const CreativeTemplate = ({ data }: { data: any }) => {
+  if (!data || !data.personalInfo) {
+    return (
+      <Document>
+        <Page size="A4" style={styles.page}>
+          <Text>Loading resume data...</Text>
+        </Page>
+      </Document>
+    );
+  }
+
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.nameRow}>
+            <View>
+              <Text style={styles.name}>{data.personalInfo.name || 'Professional Resume'}</Text>
+              <Text style={styles.tagline}>Creative Professional</Text>
+            </View>
+          </View>
+          <View style={styles.contact}>
+            {data.personalInfo.email ? <View style={styles.contactItem}><Text>✉️ {data.personalInfo.email}</Text></View> : null}
+            {data.personalInfo.phone ? <View style={styles.contactItem}><Text>📞 {data.personalInfo.phone}</Text></View> : null}
+            {data.personalInfo.location ? <View style={styles.contactItem}><Text>🗺️ {data.personalInfo.location}</Text></View> : null}
+            {data.personalInfo.portfolio ? <View style={styles.contactItem}><Text>🌍 {data.personalInfo.portfolio}</Text></View> : null}
+          </View>
+        </View>
+
+        <View style={styles.accentBar} />
+
+        {/* Professional Summary */}
+        {data.professionalSummary ? (
           <View>
-            <Text style={styles.name}>{data.personalInfo?.name || data.name}</Text>
-            <Text style={styles.tagline}>Creative Professional</Text>
+            <Text style={styles.sectionTitle}>About Me</Text>
+            <Text style={styles.description}>{data.professionalSummary}</Text>
           </View>
-        </View>
-        <View style={styles.contact}>
-          {data.personalInfo?.email && <Text>✉️ {data.personalInfo.email}</Text>}
-          {data.personalInfo?.phone && <Text>📞 {data.personalInfo.phone}</Text>}
-          {data.personalInfo?.location && <Text>🗺️ {data.personalInfo.location}</Text>}
-          {data.personalInfo?.portfolio && <Text>🌍 {data.personalInfo.portfolio}</Text>}
-        </View>
-      </View>
+        ) : null}
 
-      <View style={styles.accentBar} />
-
-      {/* Professional Summary */}
-      {data.professionalSummary && (
-        <View>
-          <Text style={styles.sectionTitle}>About Me</Text>
-          <Text style={styles.description}>{data.professionalSummary}</Text>
-        </View>
-      )}
-
-      {/* Skills */}
-      {data.skills?.length > 0 && (
-        <View>
-          <Text style={styles.sectionTitle}>My Skills</Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-            {data.skills.map((skill: any, idx: number) => (
-              <Text key={idx} style={styles.skillBadge}>
-                {skill.name}
-              </Text>
-            ))}
-          </View>
-        </View>
-      )}
-
-      {/* Experience */}
-      {data.experience?.length > 0 && (
-        <View>
-          <Text style={styles.sectionTitle}>Journey</Text>
-          {data.experience.map((exp: any, idx: number) => (
-            <View key={idx} style={styles.item}>
-              <View style={styles.itemHeader}>
-                <Text style={styles.itemTitle}>{exp.title}</Text>
-                <Text style={styles.itemDate}>
-                  {exp.startDate} — {exp.isCurrentRole ? 'Now' : exp.endDate}
+        {/* Skills */}
+        {data.skills && data.skills.length > 0 ? (
+          <View>
+            <Text style={styles.sectionTitle}>My Skills</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+              {data.skills.map((skill: any, idx: number) => (
+                <Text key={idx} style={styles.skillBadge}>
+                  {skill.name}
                 </Text>
-              </View>
-              <Text style={styles.itemCompany}>{exp.company}</Text>
-              <Text style={styles.description}>{exp.description}</Text>
+              ))}
             </View>
-          ))}
-        </View>
-      )}
+          </View>
+        ) : null}
 
-      {/* Projects */}
-      {data.projects?.length > 0 && (
-        <View>
-          <Text style={styles.sectionTitle}>Featured Work</Text>
-          {data.projects.map((proj: any, idx: number) => (
-            <View key={idx} style={styles.projectCard}>
-              <Text style={styles.projectTitle}>{proj.title}</Text>
-              <Text style={styles.description}>{proj.description}</Text>
-              {proj.technologies?.length > 0 && (
-                <View style={styles.projectTech}>
-                  <Text>🔥 {proj.technologies.join(' • ')}</Text>
-                </View>
-              )}
-            </View>
-          ))}
-        </View>
-      )}
-
-      {/* Education */}
-      {data.education?.length > 0 && (
-        <View>
-          <Text style={styles.sectionTitle}>Education</Text>
-          {data.education.map((edu: any, idx: number) => (
-            <View key={idx} style={[styles.item, { borderLeft: 'none', paddingLeft: 0 }]}>
-              <View style={styles.itemHeader}>
-                <View>
-                  <Text style={styles.itemTitle}>{edu.school}</Text>
-                  <Text style={styles.itemCompany}>
-                    {edu.degree} {edu.field ? `in ${edu.field}` : ''}
+        {/* Experience */}
+        {data.experience && data.experience.length > 0 ? (
+          <View>
+            <Text style={styles.sectionTitle}>Journey</Text>
+            {data.experience.map((exp: any, idx: number) => (
+              <View key={idx} style={styles.item}>
+                <View style={styles.itemHeader}>
+                  <Text style={styles.itemTitle}>{exp.title}</Text>
+                  <Text style={styles.itemDate}>
+                    {exp.startDate} — {exp.isCurrentRole ? 'Now' : exp.endDate}
                   </Text>
                 </View>
-                {edu.graduationDate && <Text style={styles.itemDate}>{edu.graduationDate}</Text>}
+                <Text style={styles.itemCompany}>{exp.company}</Text>
+                <Text style={styles.description}>{exp.description}</Text>
               </View>
-            </View>
-          ))}
-        </View>
-      )}
-    </Page>
-  </Document>
-)
+            ))}
+          </View>
+        ) : null}
+
+        {/* Projects */}
+        {data.projects && data.projects.length > 0 ? (
+          <View>
+            <Text style={styles.sectionTitle}>Featured Work</Text>
+            {data.projects.map((proj: any, idx: number) => (
+              <View key={idx} style={styles.projectCard}>
+                <Text style={styles.projectTitle}>{proj.title}</Text>
+                <Text style={styles.description}>{proj.description}</Text>
+                {proj.technologies && proj.technologies.length > 0 ? (
+                  <View style={styles.projectTech}>
+                    <Text>🔥 {proj.technologies.join(' • ')}</Text>
+                  </View>
+                ) : null}
+              </View>
+            ))}
+          </View>
+        ) : null}
+
+        {/* Education */}
+        {data.education && data.education.length > 0 ? (
+          <View>
+            <Text style={styles.sectionTitle}>Education</Text>
+            {data.education.map((edu: any, idx: number) => (
+              <View key={idx} style={[styles.item, { borderLeftWidth: 0, paddingLeft: 0 }]}>
+                <View style={styles.itemHeader}>
+                  <View>
+                    <Text style={styles.itemTitle}>{edu.school}</Text>
+                    <Text style={styles.itemCompany}>
+                      {edu.degree} {edu.field ? `in ${edu.field}` : ''}
+                    </Text>
+                  </View>
+                  {edu.graduationDate ? <Text style={styles.itemDate}>{edu.graduationDate}</Text> : null}
+                </View>
+              </View>
+            ))}
+          </View>
+        ) : null}
+      </Page>
+    </Document>
+  )
+}

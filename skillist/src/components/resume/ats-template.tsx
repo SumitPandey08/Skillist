@@ -1,5 +1,5 @@
 import React from 'react'
-import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer'
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
 
 // Standard fonts for ATS compatibility
 const styles = StyleSheet.create({
@@ -12,7 +12,9 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: 20,
-    borderBottom: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: '#000',
+    borderBottomStyle: 'solid',
     paddingBottom: 10,
   },
   name: {
@@ -31,7 +33,9 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     textTransform: 'uppercase',
     color: '#000',
-    borderBottom: 0.5,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#000',
+    borderBottomStyle: 'solid',
     paddingBottom: 2,
   },
   itemHeader: {
@@ -52,109 +56,110 @@ const styles = StyleSheet.create({
   skills: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 5,
   },
   skillTag: {
     backgroundColor: '#f0f0f0',
-    padding: '2 5',
+    paddingTop: 2,
+    paddingBottom: 2,
+    paddingLeft: 5,
+    paddingRight: 5,
+    marginRight: 5,
+    marginBottom: 5,
     borderRadius: 3,
   }
 })
 
-interface ResumeData {
-  personalInfo: {
-    name: string
-    email: string
-    phone?: string | null
-    location?: string | null
-    linkedIn?: string | null
-    github?: string | null
-    portfolio?: string | null
+export const ATSTemplate = ({ data }: { data: any }) => {
+  if (!data || !data.personalInfo) {
+    return (
+      <Document>
+        <Page size="A4" style={styles.page}>
+          <Text>Loading resume data...</Text>
+        </Page>
+      </Document>
+    );
   }
-  professionalSummary?: string | null
-  skills: { name: string; proficiency: string }[]
-  experience: any[]
-  education: any[]
-  projects: any[]
+  
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.name}>{data.personalInfo.name || 'Professional Resume'}</Text>
+          <Text style={styles.contact}>{data.personalInfo.email} | Portfolio Profile</Text>
+        </View>
+
+        {/* Summary */}
+        {data.professionalSummary ? (
+          <View>
+            <Text style={styles.sectionTitle}>Professional Summary</Text>
+            <Text style={styles.description}>{data.professionalSummary}</Text>
+          </View>
+        ) : null}
+
+        {/* Experience */}
+        {data.experience && data.experience.length > 0 ? (
+          <View>
+            <Text style={styles.sectionTitle}>Experience</Text>
+            {data.experience.map((exp: any, idx: number) => (
+              <View key={idx} style={{ marginBottom: 10 }}>
+                <View style={styles.itemHeader}>
+                  <Text style={styles.bold}>{exp.title}</Text>
+                  <Text>{exp.startDate} - {exp.endDate || 'Present'}</Text>
+                </View>
+                <Text style={styles.italic}>{exp.company}</Text>
+                <Text style={styles.description}>{exp.description}</Text>
+              </View>
+            ))}
+          </View>
+        ) : null}
+
+        {/* Projects */}
+        {data.projects && data.projects.length > 0 ? (
+          <View>
+            <Text style={styles.sectionTitle}>Key Projects</Text>
+            {data.projects.map((proj: any, idx: number) => (
+              <View key={idx} style={{ marginBottom: 8 }}>
+                <View style={styles.itemHeader}>
+                  <Text style={styles.bold}>{proj.title}</Text>
+                  {proj.startDate ? <Text>{proj.startDate}</Text> : null}
+                </View>
+                <Text style={styles.description}>{proj.description}</Text>
+              </View>
+            ))}
+          </View>
+        ) : null}
+
+        {/* Skills */}
+        {data.skills && data.skills.length > 0 ? (
+          <View>
+            <Text style={styles.sectionTitle}>Skills & Expertise</Text>
+            <View style={styles.skills}>
+              {data.skills.map((skill: any, idx: number) => (
+                <Text key={idx} style={styles.skillTag}>
+                  {skill.name} {skill.proficiency ? `(${skill.proficiency})` : ''}
+                </Text>
+              ))}
+            </View>
+          </View>
+        ) : null}
+
+        {/* Education */}
+        {data.education && data.education.length > 0 ? (
+          <View>
+            <Text style={styles.sectionTitle}>Education</Text>
+            {data.education.map((edu: any, idx: number) => (
+              <View key={idx} style={{ marginBottom: 5 }}>
+                <View style={styles.itemHeader}>
+                  <Text style={styles.bold}>{edu.school}</Text>
+                  {edu.graduationDate ? <Text>{edu.graduationDate}</Text> : null}
+                </View>
+                <Text>{edu.degree} in {edu.field}</Text>
+              </View>
+            ))}
+          </View>
+        ) : null}
+      </Page>
+    </Document>
+  )
 }
-
-export const ATSTemplate = ({ data }: { data: ResumeData }) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.name}>{data.personalInfo.name}</Text>
-        <Text style={styles.contact}>{data.personalInfo.email} | Portfolio Profile</Text>
-      </View>
-
-      {/* Summary */}
-      {data.professionalSummary && (
-        <View>
-          <Text style={styles.sectionTitle}>Professional Summary</Text>
-          <Text style={styles.description}>{data.professionalSummary}</Text>
-        </View>
-      )}
-
-      {/* Experience */}
-      {data.experience.length > 0 && (
-        <View>
-          <Text style={styles.sectionTitle}>Experience</Text>
-          {data.experience.map((exp: any, idx: number) => (
-            <View key={idx} style={{ marginBottom: 10 }}>
-              <View style={styles.itemHeader}>
-                <Text style={styles.bold}>{exp.title}</Text>
-                <Text>{new Date(exp.startDate).toLocaleDateString()} - {exp.endDate ? new Date(exp.endDate).toLocaleDateString() : 'Present'}</Text>
-              </View>
-              <Text style={styles.italic}>{exp.company}</Text>
-              <Text style={styles.description}>{exp.description}</Text>
-            </View>
-          ))}
-        </View>
-      )}
-
-      {/* Projects */}
-      {data.projects.length > 0 && (
-        <View>
-          <Text style={styles.sectionTitle}>Key Projects</Text>
-          {data.projects.map((proj: any, idx: number) => (
-            <View key={idx} style={{ marginBottom: 8 }}>
-              <View style={styles.itemHeader}>
-                <Text style={styles.bold}>{proj.title}</Text>
-                {proj.startDate && <Text>{new Date(proj.startDate).toLocaleDateString()}</Text>}
-              </View>
-              <Text style={styles.description}>{proj.description}</Text>
-            </View>
-          ))}
-        </View>
-      )}
-
-      {/* Skills */}
-      <View>
-        <Text style={styles.sectionTitle}>Skills & Expertise</Text>
-        <View style={styles.skills}>
-          {data.skills.map((skill: any, idx: number) => (
-            <Text key={idx} style={styles.skillTag}>
-              {skill.name} ({skill.proficiency})
-            </Text>
-          ))}
-        </View>
-      </View>
-
-      {/* Education */}
-      {data.education.length > 0 && (
-        <View>
-          <Text style={styles.sectionTitle}>Education</Text>
-          {data.education.map((edu: any, idx: number) => (
-            <View key={idx} style={{ marginBottom: 5 }}>
-              <View style={styles.itemHeader}>
-                <Text style={styles.bold}>{edu.school}</Text>
-                {edu.graduationDate && <Text>{new Date(edu.graduationDate).getFullYear()}</Text>}
-              </View>
-              <Text>{edu.degree} in {edu.field}</Text>
-            </View>
-          ))}
-        </View>
-      )}
-    </Page>
-  </Document>
-)
