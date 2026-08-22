@@ -24,8 +24,18 @@ app.use(cors({
 app.use(express.json());
 app.use(morgan('dev'));
 
+// Lightweight Ping / Keep-Alive
+app.get(['/ping', '/api/v1/ping'], (req, res) => {
+  res.status(200).json({
+    status: 'pong',
+    service: 'skillist-backend',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // Health check
-app.get('/health', async (req, res) => {
+app.get(['/health', '/api/v1/health'], async (req, res) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
     res.json({ 

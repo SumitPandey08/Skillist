@@ -89,6 +89,7 @@ export const onboarding = async (req: any, res: Response, next: NextFunction) =>
 
     res.json({ success: true });
   } catch (error) {
+    console.error(`[ONBOARDING] Error during onboarding for user ${userId}:`, error);
     next(error);
   }
 };

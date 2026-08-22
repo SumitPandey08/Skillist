@@ -40,6 +40,11 @@ const envSchema = z.object({
   GEMINI_API_KEY: z.string(),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   ALLOWED_ORIGINS: z.string().default('http://localhost:3000'),
+  RENDER_EXTERNAL_URL: z.string().optional(),
+  BACKEND_URL: z.string().optional(),
+  KEEP_ALIVE_URL: z.string().optional(),
+  ENABLE_KEEP_ALIVE: z.string().default('true'),
+  KEEP_ALIVE_INTERVAL_MS: z.string().default('600000'),
 });
 
 const parsed = envSchema.safeParse(process.env);

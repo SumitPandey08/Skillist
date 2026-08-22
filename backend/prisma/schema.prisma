@@ -29,7 +29,7 @@ model Student {
   slug                  String                 @unique
   bio                   String?
   currentGrade          String?                @map("current_grade")
-  intent                String?                @default("explore") // "explore" or "advance"
+  intent                String?                @default("explore")
   primarySkill          String?                @map("primary_skill")
   resumeUrl             String?                @map("resume_url")
   githubUsername        String?                @map("github_username")

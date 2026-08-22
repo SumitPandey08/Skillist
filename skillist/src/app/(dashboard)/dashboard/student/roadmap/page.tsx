@@ -26,8 +26,8 @@ export default async function RoadmapPage() {
   }))
 
   return (
-    <StudentDashboardLayout maxWidth="max-w-[1600px]">
-      <div className="space-y-8">
+    <StudentDashboardLayout maxWidth="max-w-[1400px]">
+      <div className="space-y-7">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-[10px] font-black uppercase tracking-[0.2em]">

@@ -129,12 +129,12 @@ function ResumePreviewInternal({
           portfolio: String(data.personalInfo?.portfolio || ''),
         },
         professionalSummary: String(data.professionalSummary || ''),
-        skills: Array.isArray(data.skills) ? data.skills.map(s => ({
+        skills: Array.isArray(data.skills) ? data.skills.map((s: any) => ({
           name: String(s.name || ''),
           proficiency: String(s.proficiency || ''),
           category: String(s.category || 'General')
         })) : [],
-        experience: Array.isArray(data.experience) ? data.experience.map(exp => ({
+        experience: Array.isArray(data.experience) ? data.experience.map((exp: any) => ({
           title: String(exp.title || ''),
           company: String(exp.company || ''),
           description: String(exp.description || ''),
@@ -143,13 +143,13 @@ function ResumePreviewInternal({
           isCurrentRole: !!exp.isCurrentRole,
           achievements: Array.isArray(exp.achievements) ? exp.achievements.map(String) : []
         })) : [],
-        projects: Array.isArray(data.projects) ? data.projects.map(p => ({
+        projects: Array.isArray(data.projects) ? data.projects.map((p: any) => ({
           title: String(p.title || ''),
           description: String(p.description || ''),
           technologies: Array.isArray(p.technologies) ? p.technologies.map(String) : [],
           url: String(p.url || '')
         })) : [],
-        education: Array.isArray(data.education) ? data.education.map(edu => ({
+        education: Array.isArray(data.education) ? data.education.map((edu: any) => ({
           school: String(edu.school || ''),
           degree: String(edu.degree || ''),
           field: String(edu.field || ''),
